@@ -21,6 +21,11 @@ class FixtureLoader {
      * @return array
      */
     public static function getFixturesFiles() {
+        self::createFolderDependencies(array(
+            self::FIXTURE_FOLDER,
+            self::IMAGES_FOLDER
+        ));
+
         $fixturesFiles =  glob(self::FIXTURE_FOLDER .'/*.yml');
         usort($fixturesFiles, function($a, $b) {
             return strnatcasecmp($b, $a);
@@ -32,11 +37,6 @@ class FixtureLoader {
      * @param string $fixtureFile
      */
     public static function load($fixtureFile) {
-        self::createFolderDependencies(array(
-            self::FIXTURE_FOLDER,
-            self::IMAGES_FOLDER
-        ));
-
         $providers = array(
             new Images(self::IMAGES_FOLDER), // Will provide functionality to load images
             new ClassificationStoreProvider(),
