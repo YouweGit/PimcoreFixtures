@@ -1,5 +1,6 @@
 <?php
 namespace Fixtures;
+
 use Fixtures\Alice\Processor\UserProcessor;
 
 use Fixtures\Alice\Persister\PimcorePersister;
@@ -26,9 +27,9 @@ class FixtureLoader {
             self::IMAGES_FOLDER
         ));
 
-        $fixturesFiles =  glob(self::FIXTURE_FOLDER .'/*.yml');
-        usort($fixturesFiles, function($a, $b) {
-            return strnatcasecmp($b, $a);
+        $fixturesFiles = glob(self::FIXTURE_FOLDER . '/*.yml');
+        usort($fixturesFiles, function ($a, $b) {
+            return strnatcasecmp($a, $b);
         });
         return $fixturesFiles;
     }
@@ -54,9 +55,9 @@ class FixtureLoader {
      * Makes sure all folders are created so glob does not throw any error
      * @param array $folders
      */
-    private static function createFolderDependencies($folders){
-        foreach ($folders as $folder){
-            if(!is_dir($folder)){
+    private static function createFolderDependencies($folders) {
+        foreach ($folders as $folder) {
+            if (!is_dir($folder)) {
                 File::mkdir($folder);
             }
         }
