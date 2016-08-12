@@ -1,0 +1,18 @@
+Pimcore\Model\Object\IboodProductSupplier:
+    supplier{1..9}:
+        supplierName: <sentence()>
+        legalName: <sentence()>
+        companyName: <sentence()>
+        supplierType: <randomElement(array('MANUFACTURER','TRADER','WHOLESALER','OFFICIAL_DISTRI','DISTRI','AGENT','IMPORTER','OTHER'))>
+        paymentType: <randomElement(array('PRE_PAYMENT','AFTER_DELIVERY','7_DAYS','10_DAYS','14_DAYS','30_DAYS'))>
+        vatNumber: <ean13()>
+        website: www.american.technical.com
+        groupSupplier: <randomElement(array('-','MSH','METRO'))>
+        supplierId: <ean13()>
+        updateSync: <dateTime()>
+        accountResponsible: <randomElement(array(@member1,@member2,@member3,@member4,@member5,@member6,@member7,@member8,@member9))>
+        interactionType: <randomElement(array('WEEKLY','MONTHLY','QUARTERLY','YEARLY'))>
+        lastInteractionDate: <dateTime()>
+        key: supplier<current()>
+        published: true
+        parent: '@suppliers_folder'

@@ -1,0 +1,8 @@
+Pimcore\Model\Object\IboodFundingProcedure:
+    fundingProcedure{1..10}:
+        name: <sentence()>
+        procedureDesc: <sentence()>
+        contact: <randomElement(array(@contact1, @contact2, @contact3, @contact4, @contact5, @contact6, @contact7, @contact8, @contact9))>
+        key: funding_procedure<current()>
+        published: true
+        parent: '@fundingProcedure_folder'

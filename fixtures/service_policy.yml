@@ -1,0 +1,10 @@
+Pimcore\Model\Object\IboodServicePolicy:
+    service_policy{1..20}:
+        name: <sentence()>
+        serviceDesc: <text()>
+        limitation: <randomElement(array('NEW', 'REFURB'))>
+        servicePeriod: '24'
+        warningMessage: <sentence()>
+        key: service<current()>
+        published: true
+        parent: '@service_policies_folder'

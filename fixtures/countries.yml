@@ -1,0 +1,25 @@
+Pimcore\Model\Object\IboodCountry:
+    nederland:
+        name: Nederland
+        currency: EURO
+        key: nederland
+        published: true
+        parent: '@countries_folder'
+    poland:
+        name: Poland
+        currency: SLOTTY
+        key: poland
+        published: true
+        parent: '@countries_folder'
+    united_kingdom:
+        name: United Kingdom
+        currency: UK_POUND
+        key: united_kingdom
+        published: true
+        parent: '@countries_folder'
+    usa:
+        name: United States
+        currency: DOLLAR
+        key: usa
+        published: true
+        parent: '@countries_folder'

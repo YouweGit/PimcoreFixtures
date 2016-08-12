@@ -1,0 +1,17 @@
+# Object folders
+Pimcore\Model\User\Folder:
+    purchasers_user_folder:
+        name: purchasers
+        parentId: 0
+    finance_user_folder:
+        name: finance
+        parentId: 0
+    logistics_user_folder:
+        name: logistics
+        parentId: 0
+    management_user_folder:
+        name: management
+        parentId: 0
+    content_user_folder:
+        name: content
+        parentId: 0

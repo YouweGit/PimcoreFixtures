@@ -1,0 +1,29 @@
+Pimcore\Model\Object\IboodMember:
+    member{1..9}:
+        memberRole: <randomElement(array('PURCHASER', 'LOGISTICS','FINANCE','MANAGEMENT','CONTENT'))>
+        firstname: <firstName()>
+        lastname: <lastName()>
+        email: <email()>
+        skype: <username()>
+        phone: <phoneNumber>
+        domain: <randomElement(array(@home_living_nederland,@sports_fashion_nederland,@extra_nederland,@home_living_poland,@sports_fashion_poland,@extra_poland,@home_living_united_kingdom,@sports_fashion_united_kingdom,@extra_united_kingdom))>
+        startDate: '<dateTimeBetween("-2 days", "now")>'
+        endDate: '<dateTimeBetween($startDate, "now")>'
+        user: '@user<current()>->id'
+        key: member<current()>
+        published: true
+        parent: '@members_folder'
+    purchaser:
+        memberRole: PURCHASER
+        firstname: <firstName()>
+        lastname: <lastName()>
+        email: <email()>
+        skype: <username()>
+        phone: <phoneNumber>
+        domain: <randomElement(array(@home_living_nederland,@sports_fashion_nederland,@extra_nederland,@home_living_poland,@sports_fashion_poland,@extra_poland,@home_living_united_kingdom,@sports_fashion_united_kingdom,@extra_united_kingdom))>
+        startDate: '<dateTimeBetween("-2 days", "now")>'
+        endDate: '<dateTimeBetween($startDate, "now")>'
+        user: '@user1>->id'
+        key: purchaser_demo
+        published: true
+        parent: '@members_folder'

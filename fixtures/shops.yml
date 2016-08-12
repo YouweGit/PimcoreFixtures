@@ -1,0 +1,55 @@
+Pimcore\Model\Object\IboodShop:
+    home_living_nederland:
+        country: '@nederland'
+        vertical: '@home_living'
+        key: home_living_nederland
+        published: true
+        parent: '@shops_folder'
+    sports_fashion_nederland:
+        country: '@nederland'
+        vertical: '@sports_fashion'
+        key: sports_fashion_nederland
+        published: true
+        parent: '@shops_folder'
+    extra_nederland:
+        country: '@nederland'
+        vertical: '@extra'
+        key: extra_nederland
+        published: true
+        parent: '@shops_folder'
+    home_living_poland:
+        country: '@poland'
+        vertical: '@home_living'
+        key: home_living_poland
+        published: true
+        parent: '@shops_folder'
+    sports_fashion_poland:
+        country: '@poland'
+        vertical: '@sports_fashion'
+        key: sports_fashion_poland
+        published: true
+        parent: '@shops_folder'
+    extra_poland:
+        country: '@poland'
+        vertical: '@extra'
+        key: extra_poland
+        published: true
+        parent: '@shops_folder'
+    home_living_united_kingdom:
+        country: '@united_kingdom'
+        vertical: '@home_living'
+        key: home_living_united_kingdom
+        published: true
+        parent: '@shops_folder'
+    sports_fashion_united_kingdom:
+        country: '@united_kingdom'
+        vertical: '@sports_fashion'
+        key: sports_fashion_united_kingdom
+        published: true
+        parent: '@shops_folder'
+    extra_united_kingdom:
+        country: '@united_kingdom'
+        vertical: '@extra'
+        key: extra_united_kingdom
+        published: true
+        parent: '@shops_folder'

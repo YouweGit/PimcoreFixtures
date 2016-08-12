@@ -1,0 +1,8 @@
+Pimcore\Model\Object\IboodBrandRelation:
+    brandRelation{1..10}:
+        supplier: <randomElement(array(@supplier1,@supplier2,@supplier3,@supplier4,@supplier5,@supplier6,@supplier7,@supplier8,@supplier9))>
+        brand: <randomElement(array(@brand1,@brand2,@brand3,@brand4,@brand5,@brand6,@brand7,@brand8,@brand9))>
+        brandRelType: <randomElement(array('MANUFACTURER','TRADER','WHOLESALER','IMPORTER','OFFICIAL_DISTR','DISTRI','AGENT','IMPORTER','OTHER'))>
+        key: brand_relation<current()>
+        published: true
+        parent: '@brands_relations_folder'

@@ -1,0 +1,40 @@
+Pimcore\Model\Object\IboodDeal:
+    deal{1..10}:
+        dealGroup: '50%? <randomElement(array(@dealGroup1,@dealGroup2,@dealGroup3,@dealGroup4,@dealGroup5))>'
+        purchaser: <randomElement(array(@member1,@member2,@member3,@member4,@member5,@member6,@member7,@member8,@member9))>
+        dealName: <sentence()>
+        status: <randomElement(array('10','25','50','75','100'))>
+        stage: <randomElement(array('PROSPECTING','NEEDS_ANALYSIS','NEGOTIATION','COUNTER_BID','CLOSED_WON','CLOSED_LOST'))>
+        closingDate: <dateTimeBetween("now", "+2 days")>
+        expQuantity: <numberBetween(100,600)>
+        dealType: <randomElement(array('MARGIN','TRANSACTION','REVENU','BRANDING'))>
+        offerType: <randomElement(array('NORMAL','COMBINATION'))>
+        saleType: <randomElement(array('DAY','FLASH','SECRET','HIDDEN','HUNT','RUSH'))>
+        startDate: <dateTimeBetween("-2 days", "now")>
+        endDate: <dateTimeBetween("now", "+2 days")>
+        promotionDetails: <sentence()>
+        specCheckId: <randomElement(array(@contact1,@contact2,@contact3,@contact4,@contact5,@contact6,@contact7,@contact8,@contact9))>
+        dealInfo: <text()>
+        account: <randomElement(array(@supplier1,@supplier2,@supplier3,@supplier4,@supplier5,@supplier6,@supplier7,@supplier8,@supplier9))>
+        accountContact: <randomElement(array(@contact1,@contact2,@contact3,@contact4,@contact5,@contact6,@contact7,@contact8,@contact9))>
+        dealOriginator: <randomElement(array(@supplier1,@supplier2,@supplier3,@supplier4,@supplier5,@supplier6,@supplier7,@supplier8,@supplier9))>
+        dealOriginatorContact: <randomElement(array(@contact1,@contact2,@contact3,@contact4,@contact5,@contact6,@contact7,@contact8,@contact9))>
+        reservationRef: <sentence()>
+        warehouse: <randomElement(array(@warehouse1,@warehouse2))>
+        delivery: <randomElement(array(true,false))>
+        expectDeliv: <dateTimeBetween("now", "+2 days")>
+        logisticsContact: <randomElement(array(@contact1,@contact2,@contact3,@contact4,@contact5,@contact6,@contact7,@contact8,@contact9))>
+        logisticDetails: <sentence()>
+        payType: <randomElement(array('PRE_PAYMENT','AFTER_DELIVERY','7_DAYS','10_DAYS','14_DAYS','30_DAYS'))>
+        entry: <randomElement(array('IBOOD_NL','IBOOD_DE','IBOOD_PL'))>
+        leadOrigin: <randomElement(array(@leadGenerator1,@leadGenerator2,@leadGenerator3,@leadGenerator4,@leadGenerator5,@leadGenerator6,@leadGenerator7,@leadGenerator8,@leadGenerator9))>
+        discount: <text()>
+        cmsOfferId: <ean13()>
+        realizedOnlineStartDate: <dateTimeBetween("-2 days", "now")>
+        realizedOnlineEndDate: <dateTimeBetween("now", "+2 days")>
+        servicePolicy: <randomElement(array(@service_policy1, @service_policy2, @service_policy3, @service_policy4, @service_policy5, @service_policy6, @service_policy7, @service_policy8, @service_policy9, @service_policy10))>
+        dealProducts: <randomElements(array(@dealProducts1, @dealProducts2, @dealProducts3, @dealProducts4, @dealProducts5, @dealProducts6, @dealProducts7, @dealProducts8, @dealProducts9, @dealProducts10),2)>
+        additionalMargins: <randomElements(array(@additionalMargin1, @additionalMargin2, @additionalMargin3, @additionalMargin4, @additionalMargin5),2)>
+        key: deal<current()>
+        published: true
+        parent: '@deals_folder'

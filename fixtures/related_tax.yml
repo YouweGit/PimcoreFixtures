@@ -1,0 +1,41 @@
+Pimcore\Model\Object\IboodRelatedTax:
+    taxNL:
+        name: Tax in Nederland
+#        category:
+        country: '@nederland'
+        description: <sentence()>
+        amount: <numberBetween(1, 1000)>
+        percentage: <numberBetween(1,30)>
+        key: tax_nl
+        published: true
+        parent: '@relatedTax_folder'
+    taxPL:
+        name: Tax in Poland
+    #    category:
+        country: '@poland'
+        description: <sentence()>
+        amount: <numberBetween(1, 1000)>
+        percentage: <numberBetween(1,30)>
+        key: tax_pl
+        published: true
+        parent: '@relatedTax_folder'
+    taxUK:
+        name: Tax in United Kingdom
+    #    category:
+        country: '@united_kingdom'
+        description: <sentence()>
+        amount: <numberBetween(1, 1000)>
+        percentage: <numberBetween(1,30)>
+        key: tax_uk
+        published: true
+        parent: '@relatedTax_folder'
+    taxUS:
+        name: Tax in United States
+    #    category:
+        country: '@usa'
+        description: <sentence()>
+        amount: <numberBetween(1, 1000)>
+        percentage: <numberBetween(1,30)>
+        key: tax_us
+        published: true
+        parent: '@relatedTax_folder'

@@ -1,0 +1,13 @@
+Pimcore\Model\Object\IboodAdditionalMargin:
+    additionalMargin{1..5}:
+#        deal: <randomElement(array(@deal1, @deal2, @deal3, @deal4, @deal5, @deal6, @deal7, @deal8, @deal9, @deal10))>
+        effectType: <randomElement(array('FIXED','PER_SKU'))>
+        domain: <randomElement(array(@marginEffectType1, @marginEffectType2, @marginEffectType3, @marginEffectType4, @marginEffectType5))>
+        details: <sentence()>
+        amount: <numberBetween(-100, 2000)>
+        invoiceNeeded: <randomElement(array('INCLUDED_ON_INVOICE', 'CREATE_SEPARATE_INVOINCE','NO'))>
+        invoiced: <boolean(50)>
+        invoicedBy: <randomElement(array(@member1, @member2, @member3, @member4, @member5, @member6, @member7, @member8, @member9))>
+        key: additional_margin<current()>
+        published: true
+        parent: '@additionalMargin_folder'

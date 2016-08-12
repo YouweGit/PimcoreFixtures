@@ -1,0 +1,16 @@
+Pimcore\Model\Object\IboodVertical:
+    home_living:
+        name: Home & living
+        key: home_living
+        published: true
+        parent: '@verticals_folder'
+    sports_fashion:
+        name: Sports & fashion
+        key: sports_fashion
+        published: true
+        parent: '@verticals_folder'
+    extra:
+        name: Extra
+        key: extra
+        published: true
+        parent: '@verticals_folder'
