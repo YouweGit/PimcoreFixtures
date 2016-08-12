@@ -16,11 +16,5 @@
     {
       "name": "Youwe"
     }
-  ],
-  "repositories": {
-    "youwe": {
-      "type": "composer",
-      "url": "https://youwe:open@packages.youwe.nl/"
-    }
-  }
+  ]
 }
