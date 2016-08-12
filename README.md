@@ -1,12 +1,10 @@
-# Pimcore YML fixtures
+### Pimcore YML fixtures
 Make sure "PimcoreFixtures" is enabled in `/website/var/config/extensions.php`
-
+Place your fixtures in `/website/var/plugins/PimcoreFixtures/fixtures`
+Load them with
 ```
 php pimcore/cli/console fixture:load
 ```
-
-Place your fixtures in `/plugins/PimcoreFixtures/fixtures` and make sure they are 
-loaded in `/plugins/PimcoreFixtures/lib/Fixtures/Console/Command/LoadFixturesCommand.php`
 
 
 ### Useful links 
