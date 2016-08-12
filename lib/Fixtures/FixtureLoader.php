@@ -47,7 +47,7 @@ class FixtureLoader {
             new UserProcessor()
         );
         $persister = new PimcorePersister(true);
-        Fixtures::load(self::FIXTURE_FOLDER . $fixtureFile, $persister, ['providers' => $providers], $processors);
+        Fixtures::load($fixtureFile, $persister, ['providers' => $providers], $processors);
     }
 
     /**

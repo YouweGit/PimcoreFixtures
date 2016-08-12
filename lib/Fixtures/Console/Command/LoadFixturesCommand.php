@@ -35,7 +35,7 @@ class LoadFixturesCommand extends AbstractCommand
         $progress = new ProgressBar($output, count($fixturesFiles));
         $progress->start();
         $progress->setFormat(" %current%/%max% [%bar%] %percent:3s%% Loading %filename%\n");
-        foreach(FixtureLoader::getFixturesFiles() as $fixtureFile){
+        foreach($fixturesFiles as $fixtureFile){
             FixtureLoader::load($fixtureFile);
             $progress->setMessage($fixtureFile, 'filename');
             $progress->advance();
