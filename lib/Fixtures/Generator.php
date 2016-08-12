@@ -72,8 +72,7 @@ class Generator {
         /** @var AbstractObject $child */
         foreach ($this->folder->getChilds([AbstractObject::OBJECT_TYPE_OBJECT]) as $child) {
 
-            $vars = $child->getObjectVars();
-            $this->filterVars($vars);
+            $vars =  $this->filterVars($child->getObjectVars());
 
             $fixtures[get_class($child)][$child->getKey()] = $vars;
         }
@@ -100,11 +99,11 @@ class Generator {
      * Unsets keys like o_classId, o_className .. see self::$ignoredFields
      * and replaces keys like o_key, o_published with values that can be converted to setters when importing see self::$convertFields
      * @param array $vars
+     * @return array
      */
-    private function filterVars(&$vars) {
-
+    private function filterVars($vars) {
         foreach ($vars as $key => $var) {
-            if (array_key_exists($key, self::$ignoredFields)){
+            if (in_array($key, self::$ignoredFields, true)){
                 unset($vars[$key]);
             }
         }
@@ -116,5 +115,6 @@ class Generator {
                 unset($vars[$oldField]);
             }
         }
+        return $vars;
     }
 }

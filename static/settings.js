@@ -52,7 +52,7 @@ Ext.onReady(function () {
     };
     var formPanel = new Ext.FormPanel({
         frame: true,
-        title: 'Generate fixtures',
+        title: 'Generate fixtures (beta)',
         labelAlign: 'right',
         labelWidth: 85,
         width: 750,
@@ -89,7 +89,7 @@ Ext.onReady(function () {
                         allowBlank: false
                     }),
                     {
-                        emptyText: 'website/lib/Fixtures/object_type.yml',
+                        emptyText: 'website/var/plugins/PimcoreFixtures/fixtures/OBJECT_NAME.yml',
                         width: 600,
                         xtype: 'textfield',
                         fieldLabel: 'Export path',
