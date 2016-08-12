@@ -1,7 +1,0 @@
-Pimcore\Model\Object\IboodLeadGenerator:
-    leadGenerator{1..10}:
-        name: <sentence()>
-        leadgenInfo: <text()>
-        key: lead_generator<current()>
-        published: true
-        parent: '@lead_generator_folder'

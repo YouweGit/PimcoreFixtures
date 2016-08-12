@@ -1,7 +1,0 @@
-Pimcore\Model\Object\IboodBrand:
-    brand{1..10}:
-        name: <company()>
-        website: <domainName()>
-        key: brand<current()>
-        published: true
-        parent: '@brands_folder'

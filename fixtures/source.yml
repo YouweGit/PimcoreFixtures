@@ -1,8 +1,0 @@
-Pimcore\Model\Object\IboodSource:
-    source{1..10}:
-        name: <word()>
-        country: <randomElement(array(@nederland, @poland, @united_kingdom, @usa))>
-        website: <url()>
-        key: source<current()>
-        published: true
-        parent: '@source_folder'
