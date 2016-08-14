@@ -111,8 +111,10 @@ class Generator
         /** @var AbstractObject $child */
         foreach ($root->getChilds() as $child) {
             $currentLevel = $this->getCurrentLevel($child);
-            $vars = $this->filterVars($child->getObjectVars(), $root);
-            $fixtures[$currentLevel][get_class($child)][$child->getKey() . '_' . $currentLevel] = $vars;
+            $vars = $this->filterVars($child , $currentLevel);
+            $objKey = $child->getKey() . '_' . $currentLevel;
+
+            $fixtures[$currentLevel][get_class($child)][$objKey] = $vars;
             if ($child->hasChilds() && ($currentLevel < $this->maxLevels)) {
                $this->getChildsRecursive($child, $fixtures, ++$currentLevel);
             }
@@ -137,7 +139,7 @@ class Generator
     {
         $yaml = Yaml::dump($data, 3);
 
-        $filename = '000_' . $this->filename;
+        $filename = '099_' . $this->filename;
         if($this->maxLevels > 1 ){
             $filename .= '_' . $level;
         }
@@ -153,11 +155,16 @@ class Generator
     /**
      * Unsets keys like o_classId, o_className .. see self::$ignoredFields
      * and replaces keys like o_key, o_published with values that can be converted to setters when importing see self::$convertFields
-     * @param array $vars
+     * @param AbstractObject $child
+     * @param $currentLevel
      * @return array
      */
-    private function filterVars($vars , $parent)
+    private function filterVars($child, $currentLevel)
     {
+
+        $vars = $child->getObjectVars();
+
+
         foreach ($vars as $key => $var) {
             if (in_array($key, self::$ignoredFields, true)) {
                 unset($vars[$key]);
@@ -171,8 +178,13 @@ class Generator
                 unset($vars[$oldField]);
             }
         }
-        $parentKey = $parent->getKey();
-        $vars['parent'] = "@$parentKey";
+
+        $parent = $child->getParent();
+        $parentKey = '@'. $parent->getKey();
+        if($parent->getId() !== $this->folder->getId()){
+            $parentKey .= '_' . (string)($currentLevel - 1);
+        }
+        $vars['parent'] = $parentKey;
 
         return $vars;
     }

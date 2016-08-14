@@ -9,13 +9,13 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class LoadFixturesCommand extends AbstractCommand {
+class LoadFixturesCommand extends AbstractCommand
+{
 
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('fixtures:load')
-            ->setDescription(
-                'Imports yml fixtures'
-            );
+            ->setDescription('Imports yml fixtures');
     }
 
     /**
@@ -24,7 +24,8 @@ class LoadFixturesCommand extends AbstractCommand {
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         // Currently we have calculated fields without any class attached
         $this->disableLogging();
 
@@ -33,13 +34,13 @@ class LoadFixturesCommand extends AbstractCommand {
         $progress->start();
         $progress->setFormat(" %current%/%max% [%bar%] %percent:3s%% Loading %filename%\n");
         foreach ($fixturesFiles as $fixtureFile) {
-            $progress->setMessage(str_replace(PIMCORE_WEBSITE_VAR, '',$fixtureFile), 'filename');
+            $progress->setMessage(str_replace(PIMCORE_WEBSITE_VAR, '', $fixtureFile), 'filename');
             FixtureLoader::load($fixtureFile);
             $progress->advance();
         }
         $progress->finish();
         $progress->clear();
-        $this->dump('Done');
+        $this->writeln('<info>Done</info>');
     }
 
 }

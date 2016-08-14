@@ -2,11 +2,13 @@
 
 use Fixtures\Console\Command\LoadFixturesCommand;
 use Fixtures\FixtureLoader;
+use Fixtures\Repository\FolderRepository;
 use Pimcore\Controller\Action\Admin;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Folder;
 
 class PimcoreFixtures_AdminController extends Admin {
+
     public function settingsAction() {
         $this->enableLayout();
     }
@@ -20,17 +22,14 @@ class PimcoreFixtures_AdminController extends Admin {
 
     public function getFolderPathAction() {
 
-        $folders = new Pimcore\Model\Object\Listing();
-        $folders->setObjectTypes([AbstractObject::OBJECT_TYPE_FOLDER]);
-
         $query = $this->getRequest()->getParam('query');
-        if ($query) {
-            $folders->setCondition('CONCAT(o_path, o_key) LIKE ?', '%' . $query . '%');
-        }
+
+        $foldersRepo = new FolderRepository();
+        $folders = $foldersRepo->getFoldersByQuery($query);
 
         $data = [];
         /** @var Folder $folder */
-        foreach ($folders->getObjects() as $folder) {
+        foreach ($folders as $folder) {
             $data[] = [
                 'id'       => $folder->getId(),
                 'fullPath' => $folder->getFullpath()
