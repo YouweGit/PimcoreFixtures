@@ -43,11 +43,11 @@ class PimcoreFixtures_AdminController extends Admin {
     }
 
     public function generateFixturesAction() {
-        $folderId = $this->getRequest()->getParam('id');
-        $saveToPath = $this->getRequest()->getParam('saveToPath');
+        $folderId = (int)$this->getRequest()->getParam('id');
+        $filename = $this->getRequest()->getParam('filename');
+        $levels = (int)$this->getRequest()->getParam('levels');
 
-
-        $generator = new \Fixtures\Generator($folderId, $saveToPath);
+        $generator = new \Fixtures\Generator($folderId, $filename, $levels);
         $generator->generateFixturesForFolder();
 
         return $this->_helper->json([

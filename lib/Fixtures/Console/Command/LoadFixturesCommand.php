@@ -33,8 +33,8 @@ class LoadFixturesCommand extends AbstractCommand {
         $progress->start();
         $progress->setFormat(" %current%/%max% [%bar%] %percent:3s%% Loading %filename%\n");
         foreach ($fixturesFiles as $fixtureFile) {
-            FixtureLoader::load($fixtureFile);
             $progress->setMessage(str_replace(PIMCORE_WEBSITE_VAR, '',$fixtureFile), 'filename');
+            FixtureLoader::load($fixtureFile);
             $progress->advance();
         }
         $progress->finish();

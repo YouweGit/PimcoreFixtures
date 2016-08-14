@@ -7,9 +7,11 @@ namespace Fixtures;
 use Pimcore\File;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Folder;
+use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\Yaml\Yaml;
 
-class Generator {
+class Generator
+{
 
 
     private static $ignoredFields = [
@@ -42,7 +44,7 @@ class Generator {
         '____pimcore_cache_item__',
     ];
     private static $convertFields = [
-        'o_key'       => 'key',
+        'o_key' => 'key',
         'o_published' => 'published'
     ];
 
@@ -51,47 +53,100 @@ class Generator {
     private $folder;
 
     /** @var string */
-    private $saveToPath;
+    private $filename;
+    /** @var int */
+    private $maxLevels;
 
     /**
      * @param int|string $folderId
-     * @param string $saveToPath
+     * @param string $filename
+     * @param int $maxLevels
      */
-    public function __construct($folderId, $saveToPath) {
+    public function __construct($folderId, $filename, $maxLevels)
+    {
+        $this->validateFields($folderId, $filename, $maxLevels);
         $this->folder = Folder::getById($folderId);
-        $this->saveToPath = $saveToPath;
+        $this->filename = $filename;
+        $this->maxLevels = (int)$maxLevels;
     }
 
     /**
-     * Gets all childs from specified folder and outputs to yml the result
+     * @param $folderId
+     * @param $filename
+     * @param $maxLevels
+     * @throws \Exception
      */
-    public function generateFixturesForFolder() {
-
-        $fixtures = [];
-
-        /** @var AbstractObject $child */
-        foreach ($this->folder->getChilds([AbstractObject::OBJECT_TYPE_OBJECT]) as $child) {
-
-            $vars =  $this->filterVars($child->getObjectVars());
-
-            $fixtures[get_class($child)][$child->getKey()] = $vars;
+    private function validateFields($folderId, $filename, $maxLevels)
+    {
+        if (is_int($folderId) === false) {
+            throw new \Exception('Folder id must be an integer');
         }
-        $this->writeToFile($fixtures);
+        if (preg_match('/^[a-z0-9_]*$/', $filename) === 0) {
+            throw new \Exception('Filename must be snake_case');
+        }
+        if (is_int($maxLevels) === false) {
+            throw new \Exception('Levels must be an integer');
+        }
     }
 
+    /**
+     * Gets all children from specified folder and outputs to yml the result
+     */
+    public function generateFixturesForFolder()
+    {
+        $fixtures = $this->getChildsRecursive($this->folder);
+        foreach ($fixtures as $level => $fixtureData) {
+            $this->writeToFile($fixtureData, $level);
+        }
+
+    }
+
+    /**
+     * @param AbstractObject $root
+     * @param array $fixtures
+     * @return array
+     */
+    private function getChildsRecursive($root, &$fixtures = [])
+    {
+        /** @var AbstractObject $child */
+        foreach ($root->getChilds() as $child) {
+            $currentLevel = $this->getCurrentLevel($child);
+            $vars = $this->filterVars($child->getObjectVars(), $root);
+            $fixtures[$currentLevel][get_class($child)][$child->getKey() . '_' . $currentLevel] = $vars;
+            if ($child->hasChilds() && ($currentLevel < $this->maxLevels)) {
+               $this->getChildsRecursive($child, $fixtures, ++$currentLevel);
+            }
+        }
+        return $fixtures;
+    }
+
+    /**
+     * @param AbstractObject $child
+     * @return int
+     */
+    private function getCurrentLevel($child){
+        $fullPath = substr($child->getFullPath(), strlen($this->folder->getFullPath()));
+        return count(explode('/', $fullPath)) - 1;
+    }
     /**
      * Outputs array to yml
      * @param array $data
+     * @param int $level
      */
-    private function writeToFile($data) {
+    private function writeToFile($data, $level = 1)
+    {
         $yaml = Yaml::dump($data, 3);
 
-        $fullPath = PIMCORE_DOCUMENT_ROOT . DIRECTORY_SEPARATOR . $this->saveToPath;
-
-        if (file_exists(dirname($fullPath))) {
-            File::mkdir(dirname($fullPath));
+        $filename = '000_' . $this->filename;
+        if($this->maxLevels > 1 ){
+            $filename .= '_' . $level;
         }
 
+        if (!is_dir(FixtureLoader::FIXTURE_FOLDER)) {
+            File::mkdir(FixtureLoader::FIXTURE_FOLDER);
+        }
+
+        $fullPath = FixtureLoader::FIXTURE_FOLDER . DIRECTORY_SEPARATOR . $filename . '.yml';
         file_put_contents($fullPath, $yaml);
     }
 
@@ -101,9 +156,10 @@ class Generator {
      * @param array $vars
      * @return array
      */
-    private function filterVars($vars) {
+    private function filterVars($vars , $parent)
+    {
         foreach ($vars as $key => $var) {
-            if (in_array($key, self::$ignoredFields, true)){
+            if (in_array($key, self::$ignoredFields, true)) {
                 unset($vars[$key]);
             }
         }
@@ -115,6 +171,9 @@ class Generator {
                 unset($vars[$oldField]);
             }
         }
+        $parentKey = $parent->getKey();
+        $vars['parent'] = "@$parentKey";
+
         return $vars;
     }
 }
