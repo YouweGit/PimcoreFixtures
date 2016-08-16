@@ -42,6 +42,8 @@ class LoadFixturesCommand extends AbstractCommand
             $progress->advance();
         }
         $progress->finish();
+
+        $output->writeln('');
         $output->writeln('<info>Done</info>');
     }
 
