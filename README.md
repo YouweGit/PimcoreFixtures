@@ -53,3 +53,4 @@ Todo:
 * security checks / user restrictions
 * better error handling in ext-js interface
 * live progress when loading fixtures
+* documentation for all custom functions
