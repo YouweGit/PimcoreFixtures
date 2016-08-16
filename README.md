@@ -16,7 +16,7 @@ Place your fixtures in `/website/var/plugins/PimcoreFixtures/fixtures` named "00
 Load them with:
 #### Console
 ```sh
-php pimcore/cli/console fixtures:load
+php pimcore/cli/console.php fixtures:load
 ```
 #### Backend
 Go to Extensions \ PimcoreFixtures \ plugin settings \ Load fixtures
@@ -39,7 +39,7 @@ php pimcore/cli/console.php fixtures:generate
 ### Delete object/assets/documents
 
 ```sh
-php pimcore/cli/console fixtures:delete-path  -t object -p /products
+php pimcore/cli/console.php fixtures:delete-path  -t object -p /products
 ```
 
 
