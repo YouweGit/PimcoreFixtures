@@ -14,18 +14,34 @@ Make sure "PimcoreFixtures" is enabled in `/website/var/config/extensions.php`
 Place your fixtures in `/website/var/plugins/PimcoreFixtures/fixtures` named "001_object_name.yml", "002_object_name.yml" etc.
 
 Load them with:
+#### Console
 ```sh
 php pimcore/cli/console fixture:load
 ```
-or
+#### Backend
 Go to Extensions \ PimcoreFixtures \ plugin settings \ Load fixtures
 
 ### Fixtures generator (still beta)
+
+#### Backend
 Go to Extensions \ PimcoreFixtures \ plugin settings
+
 1. Object path: the root where to start generating fixtures
 2. Object name: Recommended would be the object class ex. product, will translate into at [PIMCORE_ROOT]/website/var/plugins/PimcoreFixtures/fixtures/000_product.yml
 3. Max level deep: Will stop at the specified level (default 1) and if greater then 1 then level will be appended to filename
 4. Click generate. The generated files should be at [PIMCORE_ROOT]/website/var/plugins/PimcoreFixtures/fixtures/*.yml
+
+#### Console
+```sh
+php pimcore/cli/console pimcore/cli/console.php fixtures:generate
+```
+
+### Delete object/assets/documents
+
+```sh
+php pimcore/cli/console pimcore/cli/console.php fixtures:delete-path  -t object -p /products
+```
+
 
 ### Useful links 
 * [Alice documentation](https://github.com/nelmio/alice)

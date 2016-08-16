@@ -4,6 +4,7 @@ namespace Fixtures;
 
 use Fixtures\Console\Command\GenerateFixturesCommand;
 use Fixtures\Console\Command\LoadFixturesCommand;
+use Fixtures\Console\Command\RemoverCommand;
 use Pimcore\API\Plugin as PluginLib;
 use Pimcore\Console\ConsoleCommandPluginTrait;
 use Symfony\Component\Console\Command\Command;
@@ -38,7 +39,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public function getConsoleCommands() {
         return [
             new LoadFixturesCommand(),
-            new GenerateFixturesCommand()
+            new GenerateFixturesCommand(),
+            new RemoverCommand()
         ];
     }
 }

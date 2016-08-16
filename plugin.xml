@@ -3,7 +3,7 @@
 		<plugin>
         <pluginName>PimcoreFixtures</pluginName>
       	<pluginDescription><![CDATA[Load yml fixtures]]></pluginDescription>
-        <pluginVersion>0.0.1</pluginVersion>
+        <pluginVersion>0.0.9</pluginVersion>
         <pluginRevision>1</pluginRevision>
         <pluginBuildTimestamp>0</pluginBuildTimestamp>
         <pluginIframeSrc>/plugin/PimcoreFixtures/admin/settings</pluginIframeSrc>
