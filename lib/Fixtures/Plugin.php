@@ -2,6 +2,7 @@
 
 namespace Fixtures;
 
+use Fixtures\Console\Command\GenerateFixturesCommand;
 use Fixtures\Console\Command\LoadFixturesCommand;
 use Pimcore\API\Plugin as PluginLib;
 use Pimcore\Console\ConsoleCommandPluginTrait;
@@ -36,7 +37,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
      */
     public function getConsoleCommands() {
         return [
-            new LoadFixturesCommand()
+            new LoadFixturesCommand(),
+            new GenerateFixturesCommand()
         ];
     }
 }

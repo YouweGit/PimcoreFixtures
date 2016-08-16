@@ -54,7 +54,7 @@ Ext.onReady(function () {
         frame: true,
         title: 'Generate fixtures (beta)',
         labelAlign: 'right',
-        labelWidth: 85,
+        labelWidth: 150,
         width: 750,
         url: '/plugin/PimcoreFixtures/admin/generate-fixtures',
         waitMsg: 'Saving Data...',
@@ -85,16 +85,30 @@ Ext.onReady(function () {
                         triggerAction: 'all',
                         emptyText: 'Select a path...',
                         selectOnFocus: true,
-                        width: 600,
+                        width: 500,
                         allowBlank: false
                     }),
                     {
-                        emptyText: 'website/var/plugins/PimcoreFixtures/fixtures/OBJECT_NAME.yml',
-                        width: 600,
+                        emptyText: 'object_name (must be lowercase divided by underline, snake_case)',
+                        width: 500,
                         xtype: 'textfield',
-                        fieldLabel: 'Export path',
-                        name: 'saveToPath',
-                        allowBlank: false
+                        fieldLabel: 'Object name',
+                        name: 'filename',
+                        allowBlank: false,
+                        validator: function(v) {
+                            return !(v.match(/^[a-z0-9_]*$/) === null);
+                        }
+                    },
+                    {
+                        emptyText: 'How many levels deep should loop ...',
+                        width: 500,
+                        xtype: 'numberfield',
+                        fieldLabel: 'Max levels deep',
+                        name: 'levels',
+                        allowBlank: false,
+                        value: 1,
+                        maxValue: 99,
+                        minValue: 1
                     }
                 ]
             })
@@ -112,7 +126,6 @@ Ext.onReady(function () {
         labelAlign: 'right',
         labelWidth: 85,
         width: 750,
-        style: 'margin-top: 170px',
         url: '/plugin/PimcoreFixtures/admin/load-fixtures',
         waitMsg: 'Loading Data...',
         buttons:[{
@@ -122,8 +135,6 @@ Ext.onReady(function () {
     });
 
     var window = new Ext.Panel({
-        layout: 'absolute',
-        height: 300,
         items: [
             formPanel,
             loadPanel
