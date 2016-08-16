@@ -40,7 +40,7 @@ class LoadFixturesCommand extends AbstractCommand
         }
         $progress->finish();
         $progress->clear();
-        $this->writeln('<info>Done</info>');
+        $output->writeln('<info>Done</info>');
     }
 
 }
