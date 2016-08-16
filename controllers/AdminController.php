@@ -15,8 +15,9 @@ class PimcoreFixtures_AdminController extends Admin {
 
     public function loadFixturesAction() {
         $this->disableViewAutoRender();
+        $fixtureFiles = new FixtureLoader();
         foreach(FixtureLoader::getFixturesFiles() as $fixtureFile){
-            FixtureLoader::load($fixtureFile);
+            $fixtureFiles->load($fixtureFile);
         }
     }
 

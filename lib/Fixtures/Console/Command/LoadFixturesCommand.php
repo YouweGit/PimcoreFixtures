@@ -31,15 +31,17 @@ class LoadFixturesCommand extends AbstractCommand
 
         $fixturesFiles = FixtureLoader::getFixturesFiles();
         $progress = new ProgressBar($output, count($fixturesFiles));
+        $progress->setOverwrite(false);
         $progress->start();
-        $progress->setFormat(" %current%/%max% [%bar%] %percent:3s%% Loading %filename%\n");
+        $progress->setFormat(" %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% %memory:6s% \t Loading %filename%");
+
+        $fixtureFiles = new FixtureLoader();
         foreach ($fixturesFiles as $fixtureFile) {
             $progress->setMessage(str_replace(PIMCORE_WEBSITE_VAR, '', $fixtureFile), 'filename');
-            FixtureLoader::load($fixtureFile);
+            $fixtureFiles->load($fixtureFile);
             $progress->advance();
         }
         $progress->finish();
-        $progress->clear();
         $output->writeln('<info>Done</info>');
     }
 
