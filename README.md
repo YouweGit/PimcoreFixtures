@@ -1,4 +1,4 @@
-# Pimcore YML fixtures
+# Pimcore 4.* YML fixtures
 
 Based on [Alice](https://github.com/nelmio/alice)
 
