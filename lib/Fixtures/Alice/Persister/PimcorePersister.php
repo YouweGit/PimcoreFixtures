@@ -45,23 +45,6 @@ class PimcorePersister implements PersisterInterface {
     }
 
     /**
-     * Finds an object by class and id
-     *
-     * @param  string|AbstractObject $class
-     * @param  int $id
-     * @return mixed
-     */
-    public function find($class, $id) {
-
-        $obj = $class::getById($id);
-        if (!$obj) {
-            throw new \UnexpectedValueException('Object with Id ' . $id . ' and Class ' . $class . ' not found');
-        }
-
-        return $obj;
-    }
-
-    /**
      * @param AbstractObject $object
      */
     private function persistObject($object) {
@@ -71,9 +54,15 @@ class PimcorePersister implements PersisterInterface {
                 $path = str_replace('//', '/', $parent->getFullPath() . '/');
                 $object->setPath($path);
             }
-            $tmpObject = $object::getByPath($object->getFullPath());
+            $tmpObject = AbstractObject::getByPath($object->getFullPath());
+
             if ($tmpObject) {
-                $object->setId($tmpObject->getId());
+                $objClass = get_class($object);
+                if($tmpObject instanceof $objClass){
+                    $object->setId($tmpObject->getId());
+                } else {
+                    $tmpObject->delete();
+                }
             }
         }
         $object->save();
@@ -93,5 +82,22 @@ class PimcorePersister implements PersisterInterface {
         }
         $object->save();
 
+    }
+
+    /**
+     * Finds an object by class and id
+     *
+     * @param  string|AbstractObject $class
+     * @param  int $id
+     * @return mixed
+     */
+    public function find($class, $id) {
+
+        $obj = $class::getById($id);
+        if (!$obj) {
+            throw new \UnexpectedValueException('Object with Id ' . $id . ' and Class ' . $class . ' not found');
+        }
+
+        return $obj;
     }
 }
