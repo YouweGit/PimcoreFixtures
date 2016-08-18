@@ -38,8 +38,8 @@ class LoadFixturesCommand extends AbstractCommand
         $fixtureFiles = new FixtureLoader();
         foreach ($fixturesFiles as $fixtureFile) {
             $progress->setMessage(str_replace(PIMCORE_WEBSITE_VAR, '', $fixtureFile), 'filename');
-            $fixtureFiles->load($fixtureFile);
             $progress->advance();
+            $fixtureFiles->load($fixtureFile);
         }
         $progress->finish();
 
