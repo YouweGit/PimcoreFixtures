@@ -42,9 +42,5 @@ class LoadFixturesCommand extends AbstractCommand
             $fixtureFiles->load($fixtureFile);
         }
         $progress->finish();
-
-        $output->writeln('');
-        $output->writeln('<info>Done</info>');
     }
-
 }
