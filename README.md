@@ -16,7 +16,7 @@ Place your fixtures in `/website/var/plugins/PimcoreFixtures/fixtures` named "00
 Load them with:
 #### Console
 ```sh
-php pimcore/cli/console fixture:load
+php pimcore/cli/console fixture:load --with-cache
 ```
 #### Backend
 Go to Extensions \ PimcoreFixtures \ plugin settings \ Load fixtures
