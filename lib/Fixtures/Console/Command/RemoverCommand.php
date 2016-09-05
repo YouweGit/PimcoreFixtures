@@ -6,6 +6,7 @@ use Nelmio\Alice\Fixtures;
 use Pimcore\Console\AbstractCommand;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
+use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 use Pimcore\Model\Object\AbstractObject;
@@ -26,7 +27,7 @@ class RemoverCommand extends AbstractCommand
             ->addOption('type', 't', InputOption::VALUE_REQUIRED, 'Element type object, asset or document ', 'object')
             ->addOption('path', 'p', InputOption::VALUE_REQUIRED, 'Full path to the element', '/')
             ->addOption('onlyChildren', 'c', InputOption::VALUE_REQUIRED, 'Defile if only children elements should be deleted', 'yes')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Set this parameter to execute this action');
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Set this parameter to skip confirmation');
     }
 
     /**
@@ -46,38 +47,30 @@ class RemoverCommand extends AbstractCommand
         $this->validateOptions($type, $path, $onlyChildren);
 
         if (!$input->getOption('force')) {
-            $confirmationQuestion = $this->askForConfiration($output, $type, $path, $onlyChildren);
+            $confirmationQuestion = $this->askForConfirmation($output, $type, $path, $onlyChildren);
 
             if (!$helper->ask($input, $output, $confirmationQuestion)) {
                 return;
             }
         }
-
         /** @var AbstractObject|Document|Asset $element */
         $element = Service::getElementByPath($type, $path);
 
-
         if ($onlyChildren === 'yes') {
-            $children = $element->getChilds();
+            $children = $this->getChildren($element);
             $progress = $this->getProgressBar($output, count($children));
-            /** @var AbstractObject|Document $child */
-            foreach ($children as $child) {
-                $progress->setMessage($child->getFullPath(), 'path');
-                $child->delete();
-                $progress->advance();
-            }
+            $this->deleteChildren($children, $progress);
         } else {
-
-            $progress = $this->getProgressBar($output,1);
+            $progress = $this->getProgressBar($output, 1);
             $progress->setMessage($element->getFullPath(), 'path');
             $element->delete();
 
             $progress->advance();
         }
         $progress->finish();
+        $progress->clear();
 
-        $output->writeln("<info>Done deleting $path</info>");
-
+        $output->writeln(sprintf('<info>Done deleting %b elements at "%s"</info>', $progress->getMaxSteps(), $path));
     }
 
     /**
@@ -114,7 +107,7 @@ class RemoverCommand extends AbstractCommand
      * @param $onlyChildren
      * @return ConfirmationQuestion
      */
-    protected function askForConfiration(OutputInterface $output, $type, $path, $onlyChildren)
+    protected function askForConfirmation(OutputInterface $output, $type, $path, $onlyChildren)
     {
         $output->writeln(
             ['<info>',
@@ -138,10 +131,45 @@ class RemoverCommand extends AbstractCommand
      */
     protected function getProgressBar(OutputInterface $output, $max)
     {
-        $progress = new ProgressBar($output,$max);
-//        $progress->setOverwrite(false);
+        $progress = new ProgressBar($output, $max);
         $progress->start();
         $progress->setFormat(" %current%/%max% [%bar%] \t Deleting %path%");
         return $progress;
+    }
+
+    /**
+     * @param AbstractObject[]|Document[]|Asset[] $children
+     * @param ProgressBar $progress
+     * @return null
+     */
+    protected function deleteChildren($children, $progress)
+    {
+        if(count($children) <= 0){
+            return null;
+        }
+        foreach ($children as $child) {
+            $progress->setMessage($child->getFullPath(), 'path');
+            $child->delete();
+            $progress->advance();
+        }
+    }
+
+    /**
+     * @param  AbstractObject|Document|Asset $element
+     * @return AbstractObject[]|Document[]|Asset[]|[]
+     */
+    protected function getChildren($element)
+    {
+        if ($element instanceof AbstractObject) {
+            $children = $element->getChilds([
+                AbstractObject::OBJECT_TYPE_FOLDER,
+                AbstractObject::OBJECT_TYPE_OBJECT,
+                AbstractObject::OBJECT_TYPE_VARIANT
+            ], true);
+            return $children;
+        } else { // document or asset instanceof  Element\AbstractElement
+            $children = $element->getChilds(true);
+            return $children;
+        }
     }
 }
