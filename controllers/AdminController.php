@@ -19,12 +19,11 @@ class PimcoreFixtures_AdminController extends Admin {
         foreach(FixtureLoader::getFixturesFiles() as $fixtureFile){
             $fixtureFiles->load($fixtureFile);
         }
+        $this->_helper->json(['success'=> true]);
     }
 
-    public function getFolderPathAction() {
-
+    public function getFolderByPathAction() {
         $query = $this->getRequest()->getParam('query');
-
         $foldersRepo = new FolderRepository();
         $folders = $foldersRepo->getFoldersByQuery($query);
 
@@ -38,22 +37,19 @@ class PimcoreFixtures_AdminController extends Admin {
         }
 
         return $this->_helper->json([
-            'data' => $data
+            'folders' => $data,
+            'success'=> true
         ]);
     }
 
     public function generateFixturesAction() {
-        $folderId = (int)$this->getRequest()->getParam('id');
+        $folderId = (int)$this->getRequest()->getParam('folderId');
         $filename = $this->getRequest()->getParam('filename');
         $levels = (int)$this->getRequest()->getParam('levels');
-
         $generator = new \Fixtures\Generator($folderId, $filename, $levels);
         $generator->generateFixturesForFolder();
 
-        return $this->_helper->json([
-            'success' => true,
-        ]);
+        $this->_helper->json(['success'=> true]);
     }
-
 }
 
