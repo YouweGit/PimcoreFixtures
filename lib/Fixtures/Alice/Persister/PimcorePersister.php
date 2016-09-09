@@ -1,17 +1,13 @@
 <?php
 
-
 namespace Fixtures\Alice\Persister;
 
-
 use Nelmio\Alice\PersisterInterface;
-use Pimcore\Model\Element\ValidationException;
+use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object\AbstractObject;
-use Pimcore\Model;
 use Pimcore\Model\User\AbstractUser;
 
 class PimcorePersister implements PersisterInterface {
-
 
     /**
      * @var bool
@@ -25,7 +21,6 @@ class PimcorePersister implements PersisterInterface {
         $this->ignorePathAlreadyExits = $ignorePathAlreadyExits;
     }
 
-
     /**
      * Loads a fixture file
      *
@@ -34,6 +29,7 @@ class PimcorePersister implements PersisterInterface {
     public function persist(array $objects) {
         foreach ($objects as $object) {
             switch (true) {
+                case $object instanceof AbstractElement:
                 case $object instanceof AbstractObject:
                     $this->persistObject($object);
                     break;
@@ -54,7 +50,7 @@ class PimcorePersister implements PersisterInterface {
                 $path = str_replace('//', '/', $parent->getFullPath() . '/');
                 $object->setPath($path);
             }
-            $tmpObject = AbstractObject::getByPath($object->getFullPath());
+            $tmpObject = $object::getByPath($object->getFullPath());
 
             if ($tmpObject) {
                 $objClass = get_class($object);
