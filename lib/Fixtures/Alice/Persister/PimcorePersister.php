@@ -2,6 +2,7 @@
 
 namespace Fixtures\Alice\Persister;
 
+use Exception;
 use Nelmio\Alice\PersisterInterface;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object\AbstractObject;
@@ -25,6 +26,7 @@ class PimcorePersister implements PersisterInterface {
      * Loads a fixture file
      *
      * @param AbstractObject array [object] $objects instance to persist in the DB
+     * @throws \Exception
      */
     public function persist(array $objects) {
         foreach ($objects as $object) {
@@ -36,6 +38,8 @@ class PimcorePersister implements PersisterInterface {
                 case $object instanceof AbstractUser:
                     $this->persistUser($object);
                     break;
+                default:
+                    $this->persistClassWithSave($object);
             }
         }
     }
@@ -78,6 +82,13 @@ class PimcorePersister implements PersisterInterface {
         }
         $object->save();
 
+    }
+
+    /**
+     * @param \stdClass $object
+     */
+    private function persistClassWithSave($object) {
+        $object->save();
     }
 
     /**
