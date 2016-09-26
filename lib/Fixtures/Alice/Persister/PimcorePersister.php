@@ -7,6 +7,7 @@ use Nelmio\Alice\PersisterInterface;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
+use Pimcore\Model\User\Permission;
 
 class PimcorePersister implements PersisterInterface {
 
@@ -38,7 +39,8 @@ class PimcorePersister implements PersisterInterface {
                 case $object instanceof AbstractUser:
                     $this->persistUser($object);
                     break;
-                default:
+                // Add here cases of exception that don't even have a save method but they actually do
+                case $object instanceof Permission\Definition:
                     $this->persistClassWithSave($object);
             }
         }
