@@ -31,7 +31,7 @@ class PimcorePersister implements PersisterInterface {
      * @throws \Exception
      */
     public function persist(array $objects) {
-        
+
         foreach ($objects as $object) {
             switch (true) {
                 case $object instanceof AbstractElement:
@@ -46,8 +46,7 @@ class PimcorePersister implements PersisterInterface {
                     $this->persistClassWithSave($object);
                     break;
                 case $object instanceof Workspace\Object:
-                    var_dump('caught');
-//                    $this->persistWorkspace($object);
+                    $this->persistClassWithSave($object);
                     break;
                 default:
                     var_dump(get_class($object));
