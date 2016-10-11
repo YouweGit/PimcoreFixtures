@@ -8,6 +8,7 @@ use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
 use Pimcore\Model\User\Permission;
+use Pimcore\Model\User\Workspace;
 
 class PimcorePersister implements PersisterInterface {
 
@@ -30,6 +31,7 @@ class PimcorePersister implements PersisterInterface {
      * @throws \Exception
      */
     public function persist(array $objects) {
+        
         foreach ($objects as $object) {
             switch (true) {
                 case $object instanceof AbstractElement:
@@ -42,6 +44,13 @@ class PimcorePersister implements PersisterInterface {
                 // Add here cases of exception that don't even have a save method but they actually do
                 case $object instanceof Permission\Definition:
                     $this->persistClassWithSave($object);
+                    break;
+                case $object instanceof Workspace\Object:
+                    var_dump('caught');
+//                    $this->persistWorkspace($object);
+                    break;
+                default:
+                    var_dump(get_class($object));
             }
         }
     }
