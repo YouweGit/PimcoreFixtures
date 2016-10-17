@@ -48,12 +48,13 @@ class PimcorePersister implements PersisterInterface {
                 case $object instanceof Workspace\Object:
                     $this->persistClassWithSave($object);
                     break;
-                case $object instanceof Model\AbstractModel:
-                    // Don't do persist because is not required to be persisted ex. FieldCollection
-                    // Also don't move because AbstractElement and AbstractObject are AbstractModel
-                    return null;
-                default:
-                    var_dump(get_class($object));
+//                case $object instanceof Model\AbstractModel:
+//                    var_dump(get_class($object));
+//                    // Don't do persist because is not required to be persisted ex. FieldCollection
+//                    // Also don't move because AbstractElement and AbstractObject are AbstractModel
+//                    return null;
+//                default:
+//                    var_dump(get_class($object));
             }
         }
     }
