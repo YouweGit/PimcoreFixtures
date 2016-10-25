@@ -4,6 +4,7 @@ namespace Fixtures\Alice\Persister;
 
 use Nelmio\Alice\PersisterInterface;
 use Pimcore\Model;
+use Pimcore\Model\Object;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
@@ -47,6 +48,9 @@ class PimcorePersister implements PersisterInterface {
                     break;
                 case $object instanceof Workspace\Object:
                     $this->persistClassWithSave($object);
+                    break;
+                case $object instanceof Object\Objectbrick:
+                    $this->persistObjectBrickSave($object);
                     break;
 //                case $object instanceof Model\AbstractModel:
 //                    var_dump(get_class($object));
@@ -122,4 +126,21 @@ class PimcorePersister implements PersisterInterface {
 
         return $obj;
     }
+
+    /**
+     * @param Object\Objectbrick\Data\AbstractData $objectBrick
+     * @throws \UnexpectedValueException
+     */
+    private function persistObjectBrickSave($objectBrick)
+    {
+        $setter = 'set' . $objectBrick->getFieldname();
+        /** @var Object\Concrete $object */
+        $object = $objectBrick->getObject();
+        if(!method_exists($object, $setter)){
+            throw new \UnexpectedValueException(sprintf('Object with class %s has no setter %s', get_class($object), $setter));
+        }
+        $object->$setter($objectBrick);
+        $object->save();
+    }
+
 }
