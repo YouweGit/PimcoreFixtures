@@ -3,15 +3,15 @@
 namespace Fixtures\Alice\Persister;
 
 use Nelmio\Alice\PersisterInterface;
-use Pimcore\Model;
-use Pimcore\Model\Object;
 use Pimcore\Model\Element\AbstractElement;
+use Pimcore\Model\Object;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
 use Pimcore\Model\User\Permission;
 use Pimcore\Model\User\Workspace;
 
-class PimcorePersister implements PersisterInterface {
+class PimcorePersister implements PersisterInterface
+{
 
     /**
      * @var bool
@@ -21,7 +21,8 @@ class PimcorePersister implements PersisterInterface {
     /**
      * @param bool $ignorePathAlreadyExits
      */
-    public function __construct($ignorePathAlreadyExits = false) {
+    public function __construct($ignorePathAlreadyExits = false)
+    {
         $this->ignorePathAlreadyExits = $ignorePathAlreadyExits;
     }
 
@@ -31,7 +32,8 @@ class PimcorePersister implements PersisterInterface {
      * @param AbstractObject array [object] $objects instance to persist in the DB
      * @throws \Exception
      */
-    public function persist(array $objects) {
+    public function persist(array $objects)
+    {
 
         foreach ($objects as $object) {
             switch (true) {
@@ -66,7 +68,8 @@ class PimcorePersister implements PersisterInterface {
     /**
      * @param AbstractObject $object
      */
-    private function persistObject($object) {
+    private function persistObject($object)
+    {
         if ($this->ignorePathAlreadyExits === true) {
             if ($parent = $object->getParent()) {
 
@@ -77,7 +80,7 @@ class PimcorePersister implements PersisterInterface {
 
             if ($tmpObject) {
                 $objClass = get_class($object);
-                if($tmpObject instanceof $objClass){
+                if ($tmpObject instanceof $objClass) {
                     $object->setId($tmpObject->getId());
                 } else {
                     $tmpObject->delete();
@@ -90,12 +93,13 @@ class PimcorePersister implements PersisterInterface {
     /**
      * @param AbstractUser $object
      */
-    private function persistUser($object) {
+    private function persistUser($object)
+    {
 
         if ($this->ignorePathAlreadyExits === true) {
             $tmpObj = $object::getByName($object->getName());
 
-            if($tmpObj){
+            if ($tmpObj) {
                 $object->setId($tmpObj->getId());
             }
         }
@@ -106,25 +110,9 @@ class PimcorePersister implements PersisterInterface {
     /**
      * @param \stdClass $object
      */
-    private function persistClassWithSave($object) {
+    private function persistClassWithSave($object)
+    {
         $object->save();
-    }
-
-    /**
-     * Finds an object by class and id
-     *
-     * @param  string|AbstractObject $class
-     * @param  int $id
-     * @return mixed
-     */
-    public function find($class, $id) {
-
-        $obj = $class::getById($id);
-        if (!$obj) {
-            throw new \UnexpectedValueException('Object with Id ' . $id . ' and Class ' . $class . ' not found');
-        }
-
-        return $obj;
     }
 
     /**
@@ -136,11 +124,29 @@ class PimcorePersister implements PersisterInterface {
         $setter = 'set' . $objectBrick->getFieldname();
         /** @var Object\Concrete $object */
         $object = $objectBrick->getObject();
-        if(!method_exists($object, $setter)){
+        if (!method_exists($object, $setter)) {
             throw new \UnexpectedValueException(sprintf('Object with class %s has no setter %s', get_class($object), $setter));
         }
         $object->$setter($objectBrick);
         $object->save();
+    }
+
+    /**
+     * Finds an object by class and id
+     *
+     * @param  string|AbstractObject $class
+     * @param  int $id
+     * @return mixed
+     */
+    public function find($class, $id)
+    {
+
+        $obj = $class::getById($id);
+        if (!$obj) {
+            throw new \UnexpectedValueException('Object with Id ' . $id . ' and Class ' . $class . ' not found');
+        }
+
+        return $obj;
     }
 
 }

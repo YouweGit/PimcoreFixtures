@@ -7,9 +7,7 @@ use Pimcore\Config;
 use Pimcore\Console\AbstractCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class LoadFixturesCommand extends AbstractCommand
@@ -19,7 +17,8 @@ class LoadFixturesCommand extends AbstractCommand
     {
         $this->setName('fixtures:load')
             ->setDescription('Imports yml fixtures')
-            ->addOption('with-cache', 'c');
+            ->addOption('with-cache', 'c', null, 'Calculates the fingerprint of fixtures and if mathches with load sql file instead of looping throw fixtures')
+            ->addOption('files', 'f', InputArgument::OPTIONAL, 'Comma separated files located at "' . FixtureLoader::FIXTURE_FOLDER . '"');
     }
 
     /**
@@ -27,6 +26,7 @@ class LoadFixturesCommand extends AbstractCommand
      * @param OutputInterface $output
      *
      * @return int|void
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -34,12 +34,14 @@ class LoadFixturesCommand extends AbstractCommand
         // Currently we have calculated fields without any class attached
         $this->disableLogging();
         $withCache = $input->getOption('with-cache');
-        $fixtureFiles = FixtureLoader::getFixturesFiles();
-        $fingerPrintFilePath = PIMCORE_TEMPORARY_DIRECTORY . '/pimcore_fixtures_cache_' . $this->getSha1FromFixtures($fixtureFiles) . '.sql';
+        $files = $input->getOption('files') ? explode(',', $input->getOption('files')) : null;
+        $fixtureFiles = FixtureLoader::getFixturesFiles($files);
+        $fingerPrintFilePath = PIMCORE_TEMPORARY_DIRECTORY . '/pimcore_fixtures_cache_' . $this->getSha1FromFixtures($fixtureFiles). '.sql';
 
 
         if ($withCache === false || file_exists($fingerPrintFilePath) === false) {
-            $progress = new ProgressBar($output, count($fixtureFiles) + 1);
+            $steps = $withCache ? count($fixtureFiles) + 1 : count($fixtureFiles);
+            $progress = new ProgressBar($output, $steps);
             $progress->setProgressCharacter(' ');
             $progress->setEmptyBarCharacter(' ');
             $progress->setBarCharacter("\xF0\x9F\x8D\xBA"); // Beer
@@ -54,11 +56,12 @@ class LoadFixturesCommand extends AbstractCommand
                 $fixtureLoader->load($fixtureFile);
             }
 
-            $progress->setMessage('<comment>Caching loaded data</comment>');
-            $progress->advance();
-
-            $this->cacheFixtures($fingerPrintFilePath);
-
+            if ($withCache === true) {
+                $progress->setMessage('<comment>Caching loaded data</comment>');
+                $progress->advance();
+                $this->cacheFixtures($fingerPrintFilePath);
+            }
+            $progress->setMessage('');
             $progress->finish();
             $progress->clear();
             $output->writeln('  ');
@@ -66,11 +69,23 @@ class LoadFixturesCommand extends AbstractCommand
         } else {
             if (file_exists($fingerPrintFilePath)) {
                 $output->writeln(' <info>Loading fixtures from cache</info>');
-                $this->loadFromCache($fingerPrintFilePath);
+//                $this->loadFromCache($fingerPrintFilePath);
             }
         }
 
         $output->writeln(' <info>Done!</info>');
+    }
+
+    private function getSha1FromFixtures($fixtureFiles)
+    {
+        $sha1sFromContent = '';
+        foreach ($fixtureFiles as $fixtureFile) {
+            if (is_file($fixtureFile) && is_readable($fixtureFile)) {
+                $sha1sFromContent .= sha1_file($fixtureFile);
+            }
+        }
+
+        return sha1($sha1sFromContent);
     }
 
     /**
@@ -105,6 +120,25 @@ class LoadFixturesCommand extends AbstractCommand
     }
 
     /**
+     * @return resource
+     */
+    private function getTemporaryCredentialsFile()
+    {
+        $conf = Config::getSystemConfig(true);
+
+        $temp = tmpfile();
+        $credentials = join("\n", [
+            '[client]',
+            'user = ' . $conf->database->params->username,
+            'password = ' . $conf->database->params->password,
+            'host = ' . $conf->database->params->host
+        ]);
+        fwrite($temp, $credentials);
+
+        return $temp;
+    }
+
+    /**
      * @param $filePath
      */
     private function loadFromCache($filePath)
@@ -129,34 +163,5 @@ class LoadFixturesCommand extends AbstractCommand
         system($mysqlLoadCommand);
 
         fclose($temp); // this removes the file
-    }
-
-    private function getSha1FromFixtures($fixtureFiles)
-    {
-        $sha1sFromContent = '';
-        foreach ($fixtureFiles as $fixtureFile) {
-            if (is_file($fixtureFile) && is_readable($fixtureFile)) {
-                $sha1sFromContent .= sha1_file($fixtureFile);
-            }
-        }
-        return sha1($sha1sFromContent);
-    }
-
-    /**
-     * @return resource
-     */
-    private function getTemporaryCredentialsFile()
-    {
-        $conf = Config::getSystemConfig(true);
-
-        $temp = tmpfile();
-        $credentials = join("\n", [
-            '[client]',
-            'user = ' . $conf->database->params->username,
-            'password = ' . $conf->database->params->password,
-            'host = ' . $conf->database->params->host
-        ]);
-        fwrite($temp, $credentials);
-        return $temp;
     }
 }

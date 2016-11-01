@@ -9,10 +9,11 @@
 namespace Fixtures\Repository;
 
 
-use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object;
+use Pimcore\Model\Object\AbstractObject;
 
-class FolderRepository {
+class FolderRepository
+{
 
     /**
      * @param $query
@@ -26,6 +27,7 @@ class FolderRepository {
         if ($query) {
             $folders->setCondition('CONCAT(o_path, o_key) LIKE ?', '%' . $query . '%');
         }
+
         return $folders->getObjects();
     }
 }

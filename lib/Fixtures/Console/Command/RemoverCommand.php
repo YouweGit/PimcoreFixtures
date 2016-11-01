@@ -1,17 +1,14 @@
 <?php
 namespace Fixtures\Console\Command;
 
-use Fixtures\FixtureLoader;
 use Nelmio\Alice\Fixtures;
 use Pimcore\Console\AbstractCommand;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
-use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 use Pimcore\Model\Object\AbstractObject;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -111,47 +108,18 @@ class RemoverCommand extends AbstractCommand
     {
         $output->writeln(
             ['<info>',
-                'Are you sure you want to continue: ',
-                'Type: <comment>' . $type . '</comment>',
-                'Path: <comment>' . $path . '</comment>',
-                'Only children: <comment>' . $onlyChildren . '</comment>',
-                '</info>'
+             'Are you sure you want to continue: ',
+             'Type: <comment>' . $type . '</comment>',
+             'Path: <comment>' . $path . '</comment>',
+             'Only children: <comment>' . $onlyChildren . '</comment>',
+             '</info>'
             ]);
 
         $confirmationQuestion = new ConfirmationQuestion(
             '<info>Continue with this action? (y)</info>'
         );
+
         return $confirmationQuestion;
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param int $max
-     * @return ProgressBar
-     */
-    protected function getProgressBar(OutputInterface $output, $max)
-    {
-        $progress = new ProgressBar($output, $max);
-        $progress->start();
-        $progress->setFormat(" %current%/%max% [%bar%] \t Deleting %path%");
-        return $progress;
-    }
-
-    /**
-     * @param AbstractObject[]|Document[]|Asset[] $children
-     * @param ProgressBar $progress
-     * @return null
-     */
-    protected function deleteChildren($children, $progress)
-    {
-        if(count($children) <= 0){
-            return null;
-        }
-        foreach ($children as $child) {
-            $progress->setMessage($child->getFullPath(), 'path');
-            $child->delete();
-            $progress->advance();
-        }
     }
 
     /**
@@ -166,10 +134,43 @@ class RemoverCommand extends AbstractCommand
                 AbstractObject::OBJECT_TYPE_OBJECT,
                 AbstractObject::OBJECT_TYPE_VARIANT
             ], true);
+
             return $children;
         } else { // document or asset instanceof  Element\AbstractElement
             $children = $element->getChilds(true);
+
             return $children;
+        }
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param int $max
+     * @return ProgressBar
+     */
+    protected function getProgressBar(OutputInterface $output, $max)
+    {
+        $progress = new ProgressBar($output, $max);
+        $progress->start();
+        $progress->setFormat(" %current%/%max% [%bar%] \t Deleting %path%");
+
+        return $progress;
+    }
+
+    /**
+     * @param AbstractObject[]|Document[]|Asset[] $children
+     * @param ProgressBar $progress
+     * @return null
+     */
+    protected function deleteChildren($children, $progress)
+    {
+        if (count($children) <= 0) {
+            return null;
+        }
+        foreach ($children as $child) {
+            $progress->setMessage($child->getFullPath(), 'path');
+            $child->delete();
+            $progress->advance();
         }
     }
 }

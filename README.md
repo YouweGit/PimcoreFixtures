@@ -18,6 +18,12 @@ Load them with:
 ```sh
 php pimcore/cli/console.php fixture:load --with-cache
 ```
+Load individual files with --files comma separated files without yml extension:
+#### Console
+```sh
+php pimcore/cli/console.php fixture:load --files filename1,filename2
+```
+
 #### Backend
 Go to Extensions \ PimcoreFixtures \ plugin settings \ Load fixtures
 

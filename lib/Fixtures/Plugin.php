@@ -10,24 +10,28 @@ use Pimcore\Console\ConsoleCommandPluginTrait;
 use Symfony\Component\Console\Command\Command;
 
 
-class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface {
+class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
+{
     use ConsoleCommandPluginTrait;
 
-    public function init() {
+    public static function install()
+    {
+        return true;
+    }
+
+    public static function uninstall()
+    {
+        return true;
+    }
+
+    public static function isInstalled()
+    {
+        return true;
+    }
+
+    public function init()
+    {
         $this->initConsoleCommands();
-    }
-
-
-    public static function install() {
-        return true;
-    }
-
-    public static function uninstall() {
-        return true;
-    }
-
-    public static function isInstalled() {
-        return true;
     }
 
     /**
@@ -36,7 +40,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
      *
      * @return Command[]
      */
-    public function getConsoleCommands() {
+    public function getConsoleCommands()
+    {
         return [
             new LoadFixturesCommand(),
             new GenerateFixturesCommand(),

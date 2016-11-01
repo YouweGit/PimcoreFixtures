@@ -7,7 +7,6 @@ namespace Fixtures;
 use Pimcore\File;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Folder;
-use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\Yaml\Yaml;
 
 class Generator
@@ -44,7 +43,7 @@ class Generator
         '____pimcore_cache_item__',
     ];
     private static $convertFields = [
-        'o_key' => 'key',
+        'o_key'       => 'key',
         'o_published' => 'published'
     ];
 
@@ -111,14 +110,15 @@ class Generator
         /** @var AbstractObject $child */
         foreach ($root->getChilds() as $child) {
             $currentLevel = $this->getCurrentLevel($child);
-            $vars = $this->filterVars($child , $currentLevel);
+            $vars = $this->filterVars($child, $currentLevel);
             $objKey = $child->getKey() . '_' . $currentLevel;
 
-            $fixtures[$currentLevel][get_class($child)][$objKey] = $vars;
+            $fixtures[ $currentLevel ][ get_class($child) ][ $objKey ] = $vars;
             if ($child->hasChilds() && ($currentLevel < $this->maxLevels)) {
-               $this->getChildsRecursive($child, $fixtures, ++$currentLevel);
+                $this->getChildsRecursive($child, $fixtures, ++$currentLevel);
             }
         }
+
         return $fixtures;
     }
 
@@ -126,30 +126,11 @@ class Generator
      * @param AbstractObject $child
      * @return int
      */
-    private function getCurrentLevel($child){
-        $fullPath = substr($child->getFullPath(), strlen($this->folder->getFullPath()));
-        return count(explode('/', $fullPath)) - 1;
-    }
-    /**
-     * Outputs array to yml
-     * @param array $data
-     * @param int $level
-     */
-    private function writeToFile($data, $level = 1)
+    private function getCurrentLevel($child)
     {
-        $yaml = Yaml::dump($data, 3);
+        $fullPath = substr($child->getFullPath(), strlen($this->folder->getFullPath()));
 
-        $filename = '099_' . $this->filename;
-        if($this->maxLevels > 1 ){
-            $filename .= '_' . $level;
-        }
-
-        if (!is_dir(FixtureLoader::FIXTURE_FOLDER)) {
-            File::mkdir(FixtureLoader::FIXTURE_FOLDER);
-        }
-
-        $fullPath = FixtureLoader::FIXTURE_FOLDER . DIRECTORY_SEPARATOR . $filename . '.yml';
-        file_put_contents($fullPath, $yaml);
+        return count(explode('/', $fullPath)) - 1;
     }
 
     /**
@@ -167,25 +148,47 @@ class Generator
 
         foreach ($vars as $key => $var) {
             if (in_array($key, self::$ignoredFields, true)) {
-                unset($vars[$key]);
+                unset($vars[ $key ]);
             }
         }
 
 
         foreach (self::$convertFields as $oldField => $newField) {
             if (array_key_exists($oldField, $vars)) {
-                $vars[$newField] = $vars[$oldField];
-                unset($vars[$oldField]);
+                $vars[ $newField ] = $vars[ $oldField ];
+                unset($vars[ $oldField ]);
             }
         }
 
         $parent = $child->getParent();
-        $parentKey = '@'. $parent->getKey();
-        if($parent->getId() !== $this->folder->getId()){
+        $parentKey = '@' . $parent->getKey();
+        if ($parent->getId() !== $this->folder->getId()) {
             $parentKey .= '_' . (string)($currentLevel - 1);
         }
         $vars['parent'] = $parentKey;
 
         return $vars;
+    }
+
+    /**
+     * Outputs array to yml
+     * @param array $data
+     * @param int $level
+     */
+    private function writeToFile($data, $level = 1)
+    {
+        $yaml = Yaml::dump($data, 3);
+
+        $filename = '099_' . $this->filename;
+        if ($this->maxLevels > 1) {
+            $filename .= '_' . $level;
+        }
+
+        if (!is_dir(FixtureLoader::FIXTURE_FOLDER)) {
+            File::mkdir(FixtureLoader::FIXTURE_FOLDER);
+        }
+
+        $fullPath = FixtureLoader::FIXTURE_FOLDER . DIRECTORY_SEPARATOR . $filename . '.yml';
+        file_put_contents($fullPath, $yaml);
     }
 }

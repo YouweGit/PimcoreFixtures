@@ -7,12 +7,11 @@ namespace Fixtures\Alice\Processor;
 use Nelmio\Alice\ProcessorInterface;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\Folder;
 use Pimcore\Model\User;
-use Pimcore\Model\User\AbstractUser;
 use Pimcore\Tool;
 
-class UserProcessor implements ProcessorInterface {
+class UserProcessor implements ProcessorInterface
+{
 
 
     /**
@@ -20,7 +19,8 @@ class UserProcessor implements ProcessorInterface {
      *
      * @param AbstractObject|Concrete $object instance to process
      */
-    public function preProcess($object) {
+    public function preProcess($object)
+    {
         if ($object instanceof User) {
             $encryptedPass = Tool\Authentication::getPasswordHash($object->getName(), $object->getPassword());
             $object->setPassword($encryptedPass);
@@ -33,6 +33,7 @@ class UserProcessor implements ProcessorInterface {
      *
      * @param AbstractObject|Concrete $object instance to process
      */
-    public function postProcess($object) {
+    public function postProcess($object)
+    {
     }
 }

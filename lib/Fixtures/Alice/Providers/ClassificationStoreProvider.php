@@ -14,8 +14,9 @@ class ClassificationStoreProvider
      */
     public function classificationStore($data)
     {
-        $decodedData = json_decode($data,true);
+        $decodedData = json_decode($data, true);
         $classificationFieldDef = Product::create()->getClass()->getFieldDefinition('accessories');
+
         return $classificationFieldDef->getDataFromEditmode($decodedData, $classificationFieldDef);
     }
 }

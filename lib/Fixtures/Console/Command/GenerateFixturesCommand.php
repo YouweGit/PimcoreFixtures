@@ -48,11 +48,11 @@ class GenerateFixturesCommand extends AbstractCommand
 
         $output->writeln(
             ['<info>',
-                'You chose: ',
-                'Root folder: <comment>' . $rootFolder . '</comment>',
-                'Filename: <comment>' . $filename . '</comment>',
-                'Max level deep: <comment>' . $levels . '</comment>',
-                '</info>'
+             'You chose: ',
+             'Root folder: <comment>' . $rootFolder . '</comment>',
+             'Filename: <comment>' . $filename . '</comment>',
+             'Max level deep: <comment>' . $levels . '</comment>',
+             '</info>'
             ]);
 
         $confirmationQuestion = new ConfirmationQuestion(
@@ -79,6 +79,7 @@ class GenerateFixturesCommand extends AbstractCommand
         foreach ($folders as $folder) {
             $foldersArr[] = $folder->getFullPath();
         }
+
         return $foldersArr;
     }
 

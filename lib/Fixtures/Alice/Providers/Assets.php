@@ -3,7 +3,7 @@
 
 namespace Fixtures\Alice\Providers;
 
-class Images
+class Assets
 {
     /**
      * @var string
@@ -13,7 +13,8 @@ class Images
     /**
      * @param string $assetsPath
      */
-    public function __construct($assetsPath) {
+    public function __construct($assetsPath)
+    {
         $this->assetsPath = $assetsPath;
     }
 
@@ -22,34 +23,43 @@ class Images
      * @return string
      * @throws \Exception
      */
-    public function localImage($filename)
+    public function localAsset($filename)
     {
         $fileFullPath = $this->assetsPath . DIRECTORY_SEPARATOR . $filename;
         if (file_exists($fileFullPath) === false) {
             throw new \Exception(sprintf('Image not found at "%s"', $fileFullPath));
         }
+
         return fopen($fileFullPath, 'r+');
 
     }
+
     /**
      * @return string
      * @throws \Exception
      */
     public function localRandomImage()
     {
-
-        $imgs =  glob($this->assetsPath . DIRECTORY_SEPARATOR . "*");
-        if (count($imgs) === 0) {
-            throw new \Exception(sprintf('No assets found at "%s"', $this->assetsPath . DIRECTORY_SEPARATOR));
-        }
-        shuffle($imgs);
-        $fileFullPath =  current($imgs);
-        if (file_exists($fileFullPath) === false) {
-            throw new \Exception(sprintf('Image not found at "%s"', $fileFullPath));
-        }
-        return fopen($fileFullPath, 'r+');
-
+        return $this->localRandomAsset('{jpg,jpeg,png,gif}');
     }
 
+    /**
+     * @param string $extension
+     * @return string
+     * @throws \Exception
+     */
+    public function localRandomAsset($extension = '*')
+    {
+        $assets = glob($this->assetsPath . DIRECTORY_SEPARATOR . '*.' . $extension, GLOB_BRACE);
+        if (count($assets) === 0) {
+            throw new \Exception(sprintf('No assets found at "%s"', $this->assetsPath . DIRECTORY_SEPARATOR));
+        }
+        shuffle($assets);
+        $fileFullPath = current($assets);
+        if (file_exists($fileFullPath) === false) {
+            throw new \Exception(sprintf('Asset not found at "%s"', $fileFullPath));
+        }
 
+        return fopen($fileFullPath, 'r+');
+    }
 }

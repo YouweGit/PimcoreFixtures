@@ -10,7 +10,8 @@ use Pimcore\Model\Object\ClassDefinition\Data\Classificationstore;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\Folder;
 
-class ClassificationStoreProcessor implements ProcessorInterface {
+class ClassificationStoreProcessor implements ProcessorInterface
+{
 
 
     /**
@@ -18,7 +19,8 @@ class ClassificationStoreProcessor implements ProcessorInterface {
      *
      * @param AbstractObject|Concrete $object instance to process
      */
-    public function preProcess($object) {
+    public function preProcess($object)
+    {
         if (($object instanceof AbstractObject || $object instanceof Concrete) && !$object instanceof Folder && $storeName = $this->objectHasClassificationStore($object)) {
             $getter = 'get' . ucfirst($storeName);
             $setter = 'set' . ucfirst($storeName);
@@ -37,12 +39,14 @@ class ClassificationStoreProcessor implements ProcessorInterface {
      * @param AbstractObject|Concrete $object
      * @return null|string
      */
-    private function objectHasClassificationStore($object) {
+    private function objectHasClassificationStore($object)
+    {
         foreach ($object->getClass()->getFieldDefinitions() as $field) {
             if ($field instanceof Classificationstore) {
                 return $field->getName();
             }
         }
+
         return null;
     }
 
@@ -51,6 +55,7 @@ class ClassificationStoreProcessor implements ProcessorInterface {
      *
      * @param AbstractObject|Concrete $object instance to process
      */
-    public function postProcess($object) {
+    public function postProcess($object)
+    {
     }
 }

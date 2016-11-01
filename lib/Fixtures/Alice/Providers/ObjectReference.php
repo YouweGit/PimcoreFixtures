@@ -30,7 +30,34 @@ class ObjectReference
     {
         $objectsWithClass = $this->removeFirstLevel();
         $objectsWithClass = $this->filterByClass($class, $objectsWithClass);
+
         return Base::randomElement($objectsWithClass);
+    }
+
+    /**
+     * @param array $objectsWithClass
+     *
+     * @return array
+     */
+    private function removeFirstLevel($objectsWithClass = [])
+    {
+        foreach (self::$objects as $filename => $objectsInFile) {
+            $objectsWithClass = array_merge($objectsWithClass, $objectsInFile);
+        }
+
+        return $objectsWithClass;
+    }
+
+    /**
+     * @param string $class
+     * @param string $objectsWithClass
+     * @return array
+     */
+    private function filterByClass($class, $objectsWithClass)
+    {
+        return array_filter($objectsWithClass, function ($key, $object) use ($class) {
+            return is_object($key) && get_class($key) === $class;
+        }, ARRAY_FILTER_USE_BOTH);
     }
 
     /**
@@ -46,7 +73,32 @@ class ObjectReference
 
         $this->ensureKeyExists($filename, self::$objects);
         $objectsWithClass = $this->filterByFilenameAndClass($filename, $class);
+
         return Base::randomElement($objectsWithClass);
+    }
+
+    /**
+     * @param string|int $filename
+     * @param array $array
+     * @throws Exception
+     */
+    private function ensureKeyExists($filename, $array)
+    {
+        if (array_key_exists($filename, $array) === false) {
+            throw new Exception("Cannot find '$filename' in : " . implode(', ', array_keys(self::$objects)));
+        }
+    }
+
+    /**
+     * @param string $filename
+     * @param string $class
+     * @return array
+     */
+    private function filterByFilenameAndClass($filename, $class)
+    {
+        return array_filter(self::$objects[ $filename ], function ($key, $object) use ($class) {
+            return is_object($key) && get_class($key) === $class;
+        }, ARRAY_FILTER_USE_BOTH);
     }
 
     /**
@@ -60,6 +112,7 @@ class ObjectReference
     {
         $objectsWithClass = $this->removeFirstLevel();
         $objectsWithClass = $this->filterByClass($class, $objectsWithClass);
+
         return Base::randomElement($objectsWithClass, $count);
     }
 
@@ -76,6 +129,7 @@ class ObjectReference
     {
         $this->ensureKeyExists($filename, self::$objects);
         $objectsWithClass = $this->filterByFilenameAndClass($filename, $class);
+
         return Base::randomElements($objectsWithClass, $count);
     }
 
@@ -98,56 +152,8 @@ class ObjectReference
         $ceil = (int)ceil($current / $module) - 1;
 
         $this->ensureKeyExists($ceil, $keys);
-        $returnKey = $keys[$ceil];
-        return $objectsWithClass[$returnKey];
-    }
+        $returnKey = $keys[ $ceil ];
 
-    /**
-     * @param array $objectsWithClass
-     *
-     * @return array
-     */
-    private function removeFirstLevel($objectsWithClass = [])
-    {
-        foreach (self::$objects as $filename => $objectsInFile) {
-            $objectsWithClass = array_merge($objectsWithClass, $objectsInFile);
-        }
-        return $objectsWithClass;
-    }
-
-    /**
-     * @param string $filename
-     * @param string $class
-     * @return array
-     */
-    private function filterByFilenameAndClass($filename, $class)
-    {
-        return array_filter(self::$objects[$filename], function ($key, $object) use ($class) {
-            return is_object($key) && get_class($key) === $class;
-        }, ARRAY_FILTER_USE_BOTH);
-    }
-
-    /**
-     * @param string $class
-     * @param string $objectsWithClass
-     * @return array
-     */
-    private function filterByClass($class, $objectsWithClass)
-    {
-        return array_filter($objectsWithClass, function ($key, $object) use ($class) {
-            return is_object($key) && get_class($key) === $class;
-        }, ARRAY_FILTER_USE_BOTH);
-    }
-
-    /**
-     * @param string|int $filename
-     * @param array $array
-     * @throws Exception
-     */
-    private function ensureKeyExists($filename, $array)
-    {
-        if (array_key_exists($filename, $array) === false) {
-            throw new Exception("Cannot find '$filename' in : " . implode(', ', array_keys(self::$objects)));
-        }
+        return $objectsWithClass[ $returnKey ];
     }
 }

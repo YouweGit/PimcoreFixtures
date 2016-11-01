@@ -5,13 +5,15 @@ namespace Fixtures\Alice\Providers;
 
 use Pimcore\File;
 
-class General {
+class General
+{
 
     /**
      * @param $number
      * @return bool true if pair and false if impair
      */
-    public function pairNumberToTrue($number) {
+    public function pairNumberToTrue($number)
+    {
         return $number % 2 === 0;
     }
 
@@ -19,7 +21,8 @@ class General {
      * @param $number
      * @return bool true if pair and false if impair
      */
-    public function impairNumberToTrue($number) {
+    public function impairNumberToTrue($number)
+    {
         return $number % 2 !== 0;
     }
 
@@ -28,7 +31,8 @@ class General {
      * @param $module
      * @param $value
      */
-    public function modularize($min, $module, $value) {
+    public function modularize($min, $module, $value)
+    {
         return $min + ($value % $module);
     }
 
@@ -37,7 +41,8 @@ class General {
      * @param null|string $language
      * @return string
      */
-    public function validFilename($value, $language = null) {
+    public function validFilename($value, $language = null)
+    {
         return File::getValidFilename($value, $language);
     }
 }
