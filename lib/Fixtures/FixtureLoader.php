@@ -8,7 +8,7 @@ use Fixtures\Alice\Processor\ClassificationStoreProcessor;
 use Fixtures\Alice\Providers\ClassificationStoreProvider;
 use Fixtures\Alice\Providers\ObjectReference;
 use Fixtures\Alice\Providers\General;
-use Fixtures\Alice\Providers\Images;
+use Fixtures\Alice\Providers\Assets;
 use Nelmio\Alice\Fixtures;
 use Pimcore\File;
 
@@ -40,7 +40,7 @@ class FixtureLoader {
      */
     public function load($fixtureFile) {
         $providers = array(
-            new Images(self::IMAGES_FOLDER), // Will provide functionality to load images
+            new Assets(self::IMAGES_FOLDER), // Will provide functionality to load images
             new ClassificationStoreProvider(),
             new General(),
             new ObjectReference(self::$objects),

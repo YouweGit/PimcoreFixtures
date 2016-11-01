@@ -7,22 +7,26 @@ use Pimcore\Controller\Action\Admin;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Folder;
 
-class PimcoreFixtures_AdminController extends Admin {
+class PimcoreFixtures_AdminController extends Admin
+{
 
-    public function settingsAction() {
+    public function settingsAction()
+    {
         $this->enableLayout();
     }
 
-    public function loadFixturesAction() {
+    public function loadFixturesAction()
+    {
         $this->disableViewAutoRender();
         $fixtureFiles = new FixtureLoader();
-        foreach(FixtureLoader::getFixturesFiles() as $fixtureFile){
+        foreach (FixtureLoader::getFixturesFiles() as $fixtureFile) {
             $fixtureFiles->load($fixtureFile);
         }
-        $this->_helper->json(['success'=> true]);
+        $this->_helper->json(['success' => true]);
     }
 
-    public function getFolderByPathAction() {
+    public function getFolderByPathAction()
+    {
         $query = $this->getRequest()->getParam('query');
         $foldersRepo = new FolderRepository();
         $folders = $foldersRepo->getFoldersByQuery($query);
@@ -38,18 +42,19 @@ class PimcoreFixtures_AdminController extends Admin {
 
         return $this->_helper->json([
             'folders' => $data,
-            'success'=> true
+            'success' => true
         ]);
     }
 
-    public function generateFixturesAction() {
+    public function generateFixturesAction()
+    {
         $folderId = (int)$this->getRequest()->getParam('folderId');
         $filename = $this->getRequest()->getParam('filename');
         $levels = (int)$this->getRequest()->getParam('levels');
         $generator = new \Fixtures\Generator($folderId, $filename, $levels);
         $generator->generateFixturesForFolder();
 
-        $this->_helper->json(['success'=> true]);
+        $this->_helper->json(['success' => true]);
     }
 }
 
