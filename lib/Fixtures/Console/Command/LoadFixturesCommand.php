@@ -69,7 +69,7 @@ class LoadFixturesCommand extends AbstractCommand
         } else {
             if (file_exists($fingerPrintFilePath)) {
                 $output->writeln(' <info>Loading fixtures from cache</info>');
-//                $this->loadFromCache($fingerPrintFilePath);
+                $this->loadFromCache($fingerPrintFilePath);
             }
         }
 
