@@ -35,15 +35,6 @@ class Assets
     }
 
     /**
-     * @return string
-     * @throws \Exception
-     */
-    public function localRandomImage()
-    {
-        return $this->localRandomAsset('{jpg,jpeg,png,gif}');
-    }
-
-    /**
      * @param string $extension
      * @return string
      * @throws \Exception
@@ -61,5 +52,14 @@ class Assets
         }
 
         return fopen($fileFullPath, 'r+');
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function localRandomImage()
+    {
+        return $this->localRandomAsset('{jpg,jpeg,png,gif}');
     }
 }
