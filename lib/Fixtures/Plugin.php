@@ -4,6 +4,7 @@ namespace Fixtures;
 
 use Fixtures\Console\Command\GenerateFixturesCommand;
 use Fixtures\Console\Command\LoadFixturesCommand;
+use Fixtures\Console\Command\RearrangeFixturesCommand;
 use Fixtures\Console\Command\RemoverCommand;
 use Pimcore\API\Plugin as PluginLib;
 use Pimcore\Console\ConsoleCommandPluginTrait;
@@ -45,7 +46,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         return [
             new LoadFixturesCommand(),
             new GenerateFixturesCommand(),
-            new RemoverCommand()
+            new RemoverCommand(),
+            new RearrangeFixturesCommand()
         ];
     }
 }

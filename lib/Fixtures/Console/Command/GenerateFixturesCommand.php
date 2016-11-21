@@ -30,18 +30,27 @@ class GenerateFixturesCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
+        foreach (glob(FixtureLoader::FIXTURE_FOLDER . '_generated/*') as $file){
+            unlink($file);
+        }
+
+
+
+
         $helper = $this->getHelper('question');
 
         $folderRootQuestion = new ChoiceQuestion(
             '<info>Choose root folder?</info>',
-            $this->formatFoldersToCommandChoices()
+            $this->formatFoldersToCommandChoices(),
+            0
         );
 
         $rootFolder = $helper->ask($input, $output, $folderRootQuestion);
 
 
-        $filenameQuestion = new Question('<info>Choose filename: </info>');
-        $levelsQuestion = new Question('<info>Choose max levels deep (10): </info>', 10);
+        $filenameQuestion = new Question('<info>Choose filename: </info>', 'test');
+        $levelsQuestion = new Question('<info>Choose max levels deep (100): </info>', 100);
 
         $filename = $helper->ask($input, $output, $filenameQuestion);
         $levels = (int)$helper->ask($input, $output, $levelsQuestion);
@@ -63,7 +72,8 @@ class GenerateFixturesCommand extends AbstractCommand
             return;
         }
 
-        $rootId = Folder::getByPath($rootFolder)->getId();
+//        $rootId = Folder::getByPath($rootFolder)->getId();
+        $rootId = Folder::getByPath('/')->getId();
 
         $generator = new Generator($rootId, $filename, $levels);
         $generator->generateFixturesForFolder();

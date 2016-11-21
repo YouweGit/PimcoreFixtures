@@ -5,47 +5,13 @@ namespace Fixtures;
 
 
 use Pimcore\File;
+use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Folder;
+use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
 
-class Generator
-{
-
-
-    private static $ignoredFields = [
-        'o_classId',
-        'o_className',
-        'lazyLoadedFields',
-        'o_class',
-        'o_versions',
-        'o___loadedLazyFields',
-        'scheduledTasks',
-        'omitMandatoryCheck',
-        'o_id',
-        'o_parentId',
-        'o_parent',
-        'o_type',
-        'o_path',
-        'o_index',
-        'o_creationDate',
-        'o_modificationDate',
-        'o_userOwner',
-        'o_userModification',
-        'o_properties',
-        'o_hasChilds',
-        'o_siblings',
-        'o_hasSiblings',
-        'o_dependencies',
-        'o_childs',
-        'o_locked',
-        'o_elementAdminStyle',
-        '____pimcore_cache_item__',
-    ];
-    private static $convertFields = [
-        'o_key'       => 'key',
-        'o_published' => 'published'
-    ];
+class Generator {
 
 
     /** @var Folder */
@@ -58,11 +24,10 @@ class Generator
 
     /**
      * @param int|string $folderId
-     * @param string $filename
-     * @param int $maxLevels
+     * @param string     $filename
+     * @param int        $maxLevels
      */
-    public function __construct($folderId, $filename, $maxLevels)
-    {
+    public function __construct($folderId, $filename, $maxLevels) {
         $this->validateFields($folderId, $filename, $maxLevels);
         $this->folder = Folder::getById($folderId);
         $this->filename = $filename;
@@ -75,8 +40,7 @@ class Generator
      * @param $maxLevels
      * @throws \Exception
      */
-    private function validateFields($folderId, $filename, $maxLevels)
-    {
+    private function validateFields($folderId, $filename, $maxLevels) {
         if (is_int($folderId) === false) {
             throw new \Exception('Folder id must be an integer');
         }
@@ -91,31 +55,29 @@ class Generator
     /**
      * Gets all children from specified folder and outputs to yml the result
      */
-    public function generateFixturesForFolder()
-    {
-        $fixtures = $this->getChildsRecursive($this->folder);
-        foreach ($fixtures as $level => $fixtureData) {
-            $this->writeToFile($fixtureData, $level);
+    public function generateFixturesForFolder() {
+        $fixtures = $this->getChildrenRecursive($this->folder);
+        foreach ($fixtures as $level => $fixtureClasses) {
+            foreach ($fixtureClasses as $class => $fixtureData) {
+                $this->writeToFile($fixtureData, $class, $level);
+            }
         }
-
     }
 
     /**
      * @param AbstractObject $root
-     * @param array $fixtures
+     * @param array          $fixtures
      * @return array
      */
-    private function getChildsRecursive($root, &$fixtures = [])
-    {
+    private function getChildrenRecursive($root, &$fixtures = []) {
         /** @var AbstractObject $child */
-        foreach ($root->getChilds() as $child) {
+        foreach ($root->getChildren() as $child) {
             $currentLevel = $this->getCurrentLevel($child);
-            $vars = $this->filterVars($child, $currentLevel);
-            $objKey = $child->getKey() . '_' . $currentLevel;
-
-            $fixtures[ $currentLevel ][ get_class($child) ][ $objKey ] = $vars;
-            if ($child->hasChilds() && ($currentLevel < $this->maxLevels)) {
-                $this->getChildsRecursive($child, $fixtures, ++$currentLevel);
+            $values = (new ObjectValueExtractor($child))->getDataForObject();
+            $objKey = ObjectValueExtractor::getUniqueKey($child);
+            $fixtures[$currentLevel][(new ReflectionClass($child))->getShortName()][get_class($child)][$objKey] = $values;
+            if ($child->getChildren() && ($currentLevel < $this->maxLevels)) {
+                $this->getChildrenRecursive($child, $fixtures);
             }
         }
 
@@ -123,72 +85,41 @@ class Generator
     }
 
     /**
+     * Gets the level relative to home folder
      * @param AbstractObject $child
      * @return int
      */
-    private function getCurrentLevel($child)
-    {
-        $fullPath = substr($child->getFullPath(), strlen($this->folder->getFullPath()));
+    public static function getCurrentLevel($child) {
+        $fullPath = substr($child->getFullPath(), 1);
 
         return count(explode('/', $fullPath)) - 1;
     }
 
-    /**
-     * Unsets keys like o_classId, o_className .. see self::$ignoredFields
-     * and replaces keys like o_key, o_published with values that can be converted to setters when importing see self::$convertFields
-     * @param AbstractObject $child
-     * @param $currentLevel
-     * @return array
-     */
-    private function filterVars($child, $currentLevel)
-    {
-
-        $vars = $child->getObjectVars();
-
-
-        foreach ($vars as $key => $var) {
-            if (in_array($key, self::$ignoredFields, true)) {
-                unset($vars[ $key ]);
-            }
-        }
-
-
-        foreach (self::$convertFields as $oldField => $newField) {
-            if (array_key_exists($oldField, $vars)) {
-                $vars[ $newField ] = $vars[ $oldField ];
-                unset($vars[ $oldField ]);
-            }
-        }
-
-        $parent = $child->getParent();
-        $parentKey = '@' . $parent->getKey();
-        if ($parent->getId() !== $this->folder->getId()) {
-            $parentKey .= '_' . (string)($currentLevel - 1);
-        }
-        $vars['parent'] = $parentKey;
-
-        return $vars;
-    }
+    
 
     /**
      * Outputs array to yml
-     * @param array $data
-     * @param int $level
+     * @param array  $data
+     * @param string $class
+     * @param int    $level
      */
-    private function writeToFile($data, $level = 1)
-    {
-        $yaml = Yaml::dump($data, 3);
+    private function writeToFile($data, $class, $level) {
 
-        $filename = '099_' . $this->filename;
-        if ($this->maxLevels > 1) {
+        $yaml = Yaml::dump($data, 3);
+        $fixturesFolder = FixtureLoader::FIXTURE_FOLDER . '_generated' . DIRECTORY_SEPARATOR;
+        if (!is_dir($fixturesFolder)) {
+            File::mkdir($fixturesFolder);
+        }
+        $class = strtolower(preg_replace('/(?<!^)[A-Z]+/', '_$0', $class));
+
+        $filename = '099_' . $class;
+        if ($this->maxLevels > 1 && file_exists($fixturesFolder . $filename . '.yml')) {
             $filename .= '_' . $level;
         }
 
-        if (!is_dir(FixtureLoader::FIXTURE_FOLDER)) {
-            File::mkdir(FixtureLoader::FIXTURE_FOLDER);
-        }
-
-        $fullPath = FixtureLoader::FIXTURE_FOLDER . DIRECTORY_SEPARATOR . $filename . '.yml';
+        $fullPath = $fixturesFolder . $filename . '.yml';
         file_put_contents($fullPath, $yaml);
     }
+
+
 }

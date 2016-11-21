@@ -44,7 +44,7 @@ php pimcore/cli/console.php fixtures:generate
 
 ### Delete object/assets/documents
 
-```sh
+```sh****
 php pimcore/cli/console.php fixtures:delete-path  -t object -p /products
 ```
 
@@ -56,6 +56,13 @@ php pimcore/cli/console.php fixtures:delete-path  -t object -p /products
 
 
 Todo:
+* Support for following fields one fixtures:generate
+    * Object\ClassDefinition\Data\Classificationstore
+    * Object\ClassDefinition\Data\Fieldcollection
+    * Object\ClassDefinition\Data\ObjectsMetadata
+    * Object\ClassDefinition\Data\MultihrefMetadata
+    * Object\ClassDefinition\Data\Objectbricks
+
 * security checks / user restrictions
 * better error handling in ext-js interface
 * live progress when loading fixtures
