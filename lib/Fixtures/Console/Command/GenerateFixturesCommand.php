@@ -31,10 +31,6 @@ class GenerateFixturesCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        foreach (glob(FixtureLoader::FIXTURE_FOLDER . '/*') as $file){
-            unlink($file);
-        }
-
         $helper = $this->getHelper('question');
 
         $folderRootQuestion = new ChoiceQuestion(
