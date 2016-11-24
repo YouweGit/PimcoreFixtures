@@ -106,7 +106,7 @@ class Generator {
     private function writeToFile($data, $class, $level) {
 
         $yaml = Yaml::dump($data, 3);
-        $fixturesFolder = FixtureLoader::FIXTURE_FOLDER . '_generated' . DIRECTORY_SEPARATOR;
+        $fixturesFolder = FixtureLoader::FIXTURE_FOLDER . DIRECTORY_SEPARATOR;
         if (!is_dir($fixturesFolder)) {
             File::mkdir($fixturesFolder);
         }
