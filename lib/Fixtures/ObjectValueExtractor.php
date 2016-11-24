@@ -179,14 +179,13 @@ class ObjectValueExtractor {
      * @return string
      */
     public static function getUniqueKey($child) {
-        $currentLevel = Generator::getCurrentLevel($child);
         $classReflect = new ReflectionClass($child);
 
         $className = lcfirst($classReflect->getShortName());
         // Convert camelCase to snake case
         $className = strtolower(preg_replace('/(?<!^)[A-Z]+/', '_$0', $className));
 
-        $objKey = $className . '_' . $child->getKey() . '_' . $currentLevel;
+        $objKey = $className . '_' . $child->getKey() . '_' . $child->getId();
         // Replace any other characters to _
         $objKey = preg_replace('/[^0-9a-zA-Z]+/', '_', $objKey);
 

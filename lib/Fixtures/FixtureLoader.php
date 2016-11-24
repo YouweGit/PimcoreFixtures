@@ -14,7 +14,7 @@ use Pimcore\File;
 class FixtureLoader
 {
 
-    const FIXTURE_FOLDER = PIMCORE_WEBSITE_VAR . '/plugins/PimcoreFixtures/fixtures_generated';
+    const FIXTURE_FOLDER = PIMCORE_WEBSITE_VAR . '/plugins/PimcoreFixtures/fixtures';
     const IMAGES_FOLDER  = PIMCORE_WEBSITE_VAR . '/plugins/PimcoreFixtures/images';
 
     private static $objects = [];

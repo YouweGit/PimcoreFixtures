@@ -31,13 +31,6 @@ class GenerateFixturesCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        foreach (glob(FixtureLoader::FIXTURE_FOLDER . '_generated/*') as $file){
-            unlink($file);
-        }
-
-
-
-
         $helper = $this->getHelper('question');
 
         $folderRootQuestion = new ChoiceQuestion(
@@ -72,7 +65,6 @@ class GenerateFixturesCommand extends AbstractCommand
             return;
         }
 
-//        $rootId = Folder::getByPath($rootFolder)->getId();
         $rootId = Folder::getByPath('/')->getId();
 
         $generator = new Generator($rootId, $filename, $levels);
