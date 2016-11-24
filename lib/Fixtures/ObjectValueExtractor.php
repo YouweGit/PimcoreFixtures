@@ -179,7 +179,6 @@ class ObjectValueExtractor {
      * @return string
      */
     public static function getUniqueKey($child) {
-        $currentLevel = Generator::getCurrentLevel($child);
         $classReflect = new ReflectionClass($child);
 
         $className = lcfirst($classReflect->getShortName());
