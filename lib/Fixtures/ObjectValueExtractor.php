@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: burycel
- * Date: 21-11-16
- * Time: 4:31
- */
 
 namespace Fixtures;
 
@@ -44,10 +38,9 @@ class ObjectValueExtractor {
         'o_locked',
         'o_elementAdminStyle',
         '____pimcore_cache_item__',
-    ];
-    private static $convertFields = [
-        'o_key'       => 'key',
-        'o_published' => 'published',
+        'o_key',
+        'o_published'
+
     ];
 
     /**
@@ -88,7 +81,7 @@ class ObjectValueExtractor {
         } else {
             $values = $this->filterVars($this->object);
         }
-        $this->addParentReference($values);
+        $this->addSystemReferences($values);
 
         return $values;
     }
@@ -132,7 +125,6 @@ class ObjectValueExtractor {
 
     /**
      * Un-sets keys like o_classId, o_className .. see self::$ignoredFields
-     * and replaces keys like o_key, o_published with values that can be converted to setters when importing see self::$convertFields
      * @param AbstractObject $child
      * @return array
      */
@@ -147,22 +139,13 @@ class ObjectValueExtractor {
             }
         }
 
-
-        foreach (self::$convertFields as $oldField => $newField) {
-            if (array_key_exists($oldField, $vars)) {
-                $vars[$newField] = $vars[$oldField];
-                unset($vars[$oldField]);
-            }
-        }
-
         return $vars;
     }
 
     /**
      * @param array $vars
-     * @return string
      */
-    private function addParentReference(&$vars) {
+    private function addSystemReferences(&$vars) {
         $parent = $this->object->getParent();
         // Special case when parent is object home
         if ($parent->getId() === 1) {
@@ -171,6 +154,11 @@ class ObjectValueExtractor {
             $objKey = $this->getUniqueKey($parent);
             $parentKey = '@' . $objKey;
             $vars['parent'] = $parentKey;
+        }
+
+        $vars['key'] = $this->object->getKey();
+        if($this->object instanceof Object\Concrete){
+            $vars['published'] = $this->object->getPublished();
         }
     }
 
