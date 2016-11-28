@@ -49,6 +49,7 @@ class PimcorePersister implements PersisterInterface
                     $this->persistClassWithSave($object);
                     break;
                 case $object instanceof Workspace\Object:
+                case $object instanceof Workspace\Asset:
                     $this->persistClassWithSave($object);
                     break;
                 case $object instanceof Object\Objectbrick:

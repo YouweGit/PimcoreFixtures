@@ -8,8 +8,9 @@ use Nelmio\Alice\ProcessorInterface;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\User;
-use Pimcore\Model\User\Workspace\AbstractWorkspace;
 use Pimcore\Tool;
+use Pimcore\Model\User\Workspace;
+use Pimcore\Model\Asset\Folder;
 
 class WorkspaceProcessor implements ProcessorInterface
 {
@@ -21,8 +22,13 @@ class WorkspaceProcessor implements ProcessorInterface
      */
     public function preProcess($object)
     {
-        if ($object instanceof AbstractWorkspace) {
+        if ($object instanceof Workspace\Object) {
             $cPathObj = AbstractObject::getById($object->getCid());
+            $cPath = $cPathObj->getFullPath();
+            $object->setCpath($cPath);
+        }
+        if ($object instanceof Workspace\Asset) {
+            $cPathObj = Folder::getById($object->getCid());
             $cPath = $cPathObj->getFullPath();
             $object->setCpath($cPath);
         }
