@@ -11,7 +11,8 @@ use Pimcore\Model\Object\Folder;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
 
-class Generator {
+class Generator
+{
 
 
     /** @var Folder */
@@ -24,10 +25,11 @@ class Generator {
 
     /**
      * @param int|string $folderId
-     * @param string     $filename
-     * @param int        $maxLevels
+     * @param string $filename
+     * @param int $maxLevels
      */
-    public function __construct($folderId, $filename, $maxLevels) {
+    public function __construct($folderId, $filename, $maxLevels)
+    {
         $this->validateFields($folderId, $filename, $maxLevels);
         $this->folder = Folder::getById($folderId);
         $this->filename = $filename;
@@ -40,7 +42,8 @@ class Generator {
      * @param $maxLevels
      * @throws \Exception
      */
-    private function validateFields($folderId, $filename, $maxLevels) {
+    private function validateFields($folderId, $filename, $maxLevels)
+    {
         if (is_int($folderId) === false) {
             throw new \Exception('Folder id must be an integer');
         }
@@ -55,7 +58,8 @@ class Generator {
     /**
      * Gets all children from specified folder and outputs to yml the result
      */
-    public function generateFixturesForFolder() {
+    public function generateFixturesForFolder()
+    {
         $fixtures = $this->getChildrenRecursive($this->folder);
         foreach ($fixtures as $level => $fixtureClasses) {
             foreach ($fixtureClasses as $class => $fixtureData) {
@@ -64,18 +68,22 @@ class Generator {
         }
     }
 
-    /**
-     * @param AbstractObject $root
-     * @param array          $fixtures
-     * @return array
-     */
-    private function getChildrenRecursive($root, &$fixtures = []) {
+    private function getChildrenRecursive($root, &$fixtures = [])
+    {
         /** @var AbstractObject $child */
         foreach ($root->getChildren() as $child) {
             $currentLevel = $this->getCurrentLevel($child);
-            $values = (new ObjectValueExtractor($child))->getDataForObject();
+
+            $valueExtractor = new ObjectValueExtractor($child);
+
+            $values = $valueExtractor->getDataForObject();
             $objKey = ObjectValueExtractor::getUniqueKey($child);
-            $fixtures[$currentLevel][(new ReflectionClass($child))->getShortName()][get_class($child)][$objKey] = $values;
+            $fixtures[ $currentLevel ][ (new ReflectionClass($child))->getShortName() ][ get_class($child) ][ $objKey ] = $values;
+
+            if ($valueExtractor->hasObjectBrick()) {
+                $valueExtractor->addObjectBricksForObject($child, $fixtures[ $currentLevel ][ (new ReflectionClass($child))->getShortName() ]);
+            }
+
             if ($child->getChildren() && ($currentLevel < $this->maxLevels)) {
                 $this->getChildrenRecursive($child, $fixtures);
             }
@@ -89,21 +97,22 @@ class Generator {
      * @param AbstractObject $child
      * @return int
      */
-    public static function getCurrentLevel($child) {
+    public static function getCurrentLevel($child)
+    {
         $fullPath = substr($child->getFullPath(), 1);
 
         return count(explode('/', $fullPath)) - 1;
     }
 
-    
 
     /**
      * Outputs array to yml
-     * @param array  $data
+     * @param array $data
      * @param string $class
-     * @param int    $level
+     * @param int $level
      */
-    private function writeToFile($data, $class, $level) {
+    private function writeToFile($data, $class, $level)
+    {
 
         $yaml = Yaml::dump($data, 3);
         $fixturesFolder = FixtureLoader::FIXTURE_FOLDER . '_generated' . DIRECTORY_SEPARATOR;

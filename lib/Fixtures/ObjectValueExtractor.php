@@ -2,11 +2,12 @@
 
 namespace Fixtures;
 
-use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object;
+use Pimcore\Model\Object\AbstractObject;
 use ReflectionClass;
 
-class ObjectValueExtractor {
+class ObjectValueExtractor
+{
     /** @var Object\Concrete */
     private $object;
 
@@ -46,11 +47,13 @@ class ObjectValueExtractor {
     /**
      * @param AbstractObject $object
      */
-    public function __construct($object) {
+    public function __construct($object)
+    {
         $this->object = $object;
     }
 
-    public function getDataForObject() {
+    public function getDataForObject()
+    {
         if ($this->object instanceof Object\Concrete) {
             $values = [];
             foreach ($this->object->getClass()->getFieldDefinitions() as $key => $def) {
@@ -69,11 +72,11 @@ class ObjectValueExtractor {
                 ) {
                     if ($def instanceof Object\ClassDefinition\Data\Localizedfields) {
                         foreach ($def->getFieldDefinitions() as $localizedKey => $localizedFd) {
-                            $values[$localizedKey] = $this->getDataForField($this->object, $localizedKey, $localizedFd);
+                            $values[ $localizedKey ] = $this->getDataForField($this->object, $localizedKey, $localizedFd);
 
                         }
                     } else {
-                        $values[$key] = $this->getDataForField($this->object, $key, $def);
+                        $values[ $key ] = $this->getDataForField($this->object, $key, $def);
 
                     }
                 }
@@ -87,12 +90,13 @@ class ObjectValueExtractor {
     }
 
     /**
-     * @param Object\Concrete             $object
-     * @param string                      $key
+     * @param Object\Concrete $object
+     * @param string $key
      * @param Object\ClassDefinition\Data $fieldDefinition
      * @return array
      */
-    private function getDataForField($object, $key, $fieldDefinition) {
+    private function getDataForField($object, $key, $fieldDefinition)
+    {
         if ($fieldDefinition instanceof Object\ClassDefinition\Data\Relations\AbstractRelations) {
             $relations = $object->getRelationData($key, !$fieldDefinition->isRemoteOwner(), null);
 
@@ -124,18 +128,70 @@ class ObjectValueExtractor {
     }
 
     /**
+     * @return bool
+     */
+    public function hasObjectBrick()
+    {
+        if ($this->object instanceof Object\Concrete) {
+            foreach ($this->object->getClass()->getFieldDefinitions() as $key => $def) {
+                if ($def instanceof Object\ClassDefinition\Data\Objectbricks) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Object\Concrete $object
+     * @param array $classArray Array containing the class data
+     */
+    public function addObjectBricksForObject($object, &$classArray)
+    {
+        if ($object instanceof Object\Concrete) {
+            foreach ($object->getClass()->getFieldDefinitions() as $key => $def) {
+                if ($def instanceof Object\ClassDefinition\Data\Objectbricks) {
+                    $getter = 'get' . ucfirst($key);
+                    /** @var \Pimcore\Model\Object\Objectbrick $objectBrick */
+                    $objectBrick = $object->$getter();
+
+                    $objectBrickGetter = current($objectBrick->getBrickGetters());
+                    /** @var Object\Objectbrick\Data\AbstractData $objectBrickHolder */
+                    $objectBrickHolder = $objectBrick->$objectBrickGetter();
+                    if ($objectBrickHolder) {
+                        /** @var Object\Objectbrick\Definition $objectBrickHolderDefinition */
+                        $objectBrickHolderDefinition = $objectBrickHolder->getDefinition();
+                        $classArray[ get_class($objectBrickHolder) ][ self::getUniqueKey($object) . '_' . $key . '_holder' ]['__construct'] = ['@' . self::getUniqueKey($object)];
+                        foreach ($objectBrickHolderDefinition->getFieldDefinitions() as $objectBrickKey => $objectBrickDefinition) {
+                            $getter = 'get' . ucfirst($objectBrickKey);
+                            $classArray[ get_class($objectBrickHolder) ][ self::getUniqueKey($object) . '_' . $key . '_holder' ][ $objectBrickKey ] = $objectBrickHolder->$getter();
+                        }
+
+                        $classArray[ get_class($objectBrick) ][ self::getUniqueKey($object) . '_' . $key ] = [
+                            '__construct' => ['@' . self::getUniqueKey($object), $key],
+                            $key          => '@' . self::getUniqueKey($object) . '_' . $key . '_holder'
+                        ];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Un-sets keys like o_classId, o_className .. see self::$ignoredFields
      * @param AbstractObject $child
      * @return array
      */
-    private function filterVars($child) {
+    private function filterVars($child)
+    {
 
         $vars = $child->getObjectVars();
 
 
         foreach ($vars as $key => $var) {
             if (in_array($key, self::$ignoredFields, true)) {
-                unset($vars[$key]);
+                unset($vars[ $key ]);
             }
         }
 
@@ -145,7 +201,8 @@ class ObjectValueExtractor {
     /**
      * @param array $vars
      */
-    private function addSystemReferences(&$vars) {
+    private function addSystemReferences(&$vars)
+    {
         $parent = $this->object->getParent();
         // Special case when parent is object home
         if ($parent->getId() === 1) {
@@ -157,7 +214,7 @@ class ObjectValueExtractor {
         }
 
         $vars['key'] = $this->object->getKey();
-        if($this->object instanceof Object\Concrete){
+        if ($this->object instanceof Object\Concrete) {
             $vars['published'] = $this->object->getPublished();
         }
     }
@@ -166,7 +223,8 @@ class ObjectValueExtractor {
      * @param AbstractObject $child
      * @return string
      */
-    public static function getUniqueKey($child) {
+    public static function getUniqueKey($child)
+    {
         $classReflect = new ReflectionClass($child);
 
         $className = lcfirst($classReflect->getShortName());

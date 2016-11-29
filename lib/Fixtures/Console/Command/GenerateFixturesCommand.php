@@ -64,8 +64,11 @@ class GenerateFixturesCommand extends AbstractCommand
         if (!$helper->ask($input, $output, $confirmationQuestion)) {
             return;
         }
+        foreach (glob(FixtureLoader::FIXTURE_FOLDER . '_generated' . DIRECTORY_SEPARATOR . '*.yml') as $file){
+            unlink($file);
+        }
 
-        $rootId = Folder::getByPath('/')->getId();
+        $rootId = Folder::getByPath($rootFolder)->getId();
 
         $generator = new Generator($rootId, $filename, $levels);
         $generator->generateFixturesForFolder();
