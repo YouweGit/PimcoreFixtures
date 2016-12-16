@@ -13,6 +13,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class Generator
 {
+    const ALL_OBJ_TYPES = [AbstractObject::OBJECT_TYPE_OBJECT, AbstractObject::OBJECT_TYPE_FOLDER , AbstractObject::OBJECT_TYPE_VARIANT];
 
 
     /** @var Folder */
@@ -31,7 +32,7 @@ class Generator
     public function __construct($folderId, $filename, $maxLevels)
     {
         $this->validateFields($folderId, $filename, $maxLevels);
-        $this->folder = Folder::getById($folderId);
+        $this->folder = AbstractObject::getById($folderId);
         $this->filename = $filename;
         $this->maxLevels = (int)$maxLevels;
     }
@@ -71,7 +72,7 @@ class Generator
     private function getChildrenRecursive($root, &$fixtures = [])
     {
         /** @var AbstractObject $child */
-        foreach ($root->getChildren() as $child) {
+        foreach ($root->getChilds(self::ALL_OBJ_TYPES, true) as $child) {
             $currentLevel = $this->getCurrentLevel($child);
 
             $valueExtractor = new ObjectValueExtractor($child);
@@ -84,7 +85,7 @@ class Generator
                 $valueExtractor->addObjectBricksForObject($child, $fixtures[ $currentLevel ][ (new ReflectionClass($child))->getShortName() ]);
             }
 
-            if ($child->getChildren() && ($currentLevel < $this->maxLevels)) {
+            if ($child->getChilds(self::ALL_OBJ_TYPES, true) && ($currentLevel < $this->maxLevels)) {
                 $this->getChildrenRecursive($child, $fixtures);
             }
         }
