@@ -23,14 +23,27 @@ class WorkspaceProcessor implements ProcessorInterface
     public function preProcess($object)
     {
         if ($object instanceof Workspace\Object) {
-            $cPathObj = AbstractObject::getById($object->getCid());
-            $cPath = $cPathObj->getFullPath();
-            $object->setCpath($cPath);
+            if ($object->getCid()) {
+                $cPathObj = AbstractObject::getById($object->getCid());
+                $cPath = $cPathObj->getFullPath();
+                $object->setCpath($cPath);
+            } elseif ($object->getCpath()) {
+                $cIdObj = AbstractObject::getByPath($object->getCpath());
+                $cId = $cIdObj->getId();
+                $object->setCid($cId);
+            }
+
         }
         if ($object instanceof Workspace\Asset) {
-            $cPathObj = Folder::getById($object->getCid());
-            $cPath = $cPathObj->getFullPath();
-            $object->setCpath($cPath);
+            if ($object->getCid()) {
+                $cPathObj = Folder::getById($object->getCid());
+                $cPath = $cPathObj->getFullPath();
+                $object->setCpath($cPath);
+            } elseif ($object->getCpath()) {
+                $cIdObj = Folder::getByPath($object->getCpath());
+                $cId = $cIdObj->getId();
+                $object->setCid($cId);
+            }
         }
     }
 
