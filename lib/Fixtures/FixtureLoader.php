@@ -7,6 +7,7 @@ use Fixtures\Alice\Processor\UserProcessor;
 use Fixtures\Alice\Processor\WorkspaceProcessor;
 use Fixtures\Alice\Providers\Assets;
 use Fixtures\Alice\Providers\ClassificationStoreProvider;
+use Fixtures\Alice\Providers\DateTime;
 use Fixtures\Alice\Providers\General;
 use Fixtures\Alice\Providers\ObjectReference;
 use Nelmio\Alice\Fixtures;
@@ -52,6 +53,7 @@ class FixtureLoader
             new Assets(self::IMAGES_FOLDER), // Will provide functionality to load images
             new ClassificationStoreProvider(),
             new General(),
+            new DateTime(),
             new ObjectReference(self::$objects),
         ];
         $processors = [
