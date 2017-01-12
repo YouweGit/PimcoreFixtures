@@ -17,6 +17,6 @@ class DateTime {
      * @return int
      */
     public static function exactDateTime($date = 'now') {
-        return (new \DateTime( $date ))->getTimestamp();
+        return new \DateTime( $date );
     }
 }
