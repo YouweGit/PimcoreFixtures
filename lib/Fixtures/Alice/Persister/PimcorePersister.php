@@ -16,14 +16,14 @@ class PimcorePersister implements PersisterInterface
     /**
      * @var bool
      */
-    private $ignorePathAlreadyExits;
+    private $ignorePathAlreadyExists;
 
     /**
      * @param bool $ignorePathAlreadyExits
      */
     public function __construct($ignorePathAlreadyExits = false)
     {
-        $this->ignorePathAlreadyExits = $ignorePathAlreadyExits;
+        $this->ignorePathAlreadyExists = $ignorePathAlreadyExits;
     }
 
     /**
@@ -71,7 +71,7 @@ class PimcorePersister implements PersisterInterface
      */
     private function persistObject($object)
     {
-        if ($this->ignorePathAlreadyExits === true) {
+        if ($this->ignorePathAlreadyExists === true) {
             if ($parent = $object->getParent()) {
 
                 $path = str_replace('//', '/', $parent->getFullPath() . '/');
@@ -97,7 +97,7 @@ class PimcorePersister implements PersisterInterface
     private function persistUser($object)
     {
 
-        if ($this->ignorePathAlreadyExits === true) {
+        if ($this->ignorePathAlreadyExists === true) {
             $tmpObj = $object::getByName($object->getName());
 
             if ($tmpObj) {

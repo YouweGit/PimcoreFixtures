@@ -61,7 +61,7 @@ class FixtureLoader
             new UserProcessor(),
             new WorkspaceProcessor()
         ];
-        $persister = new PimcorePersister(true);
+        $persister = new PimcorePersister(); // set parameter to true to update existing objects
         $basename = basename($fixtureFile);
         self::$objects[ $basename ] = array_merge(self::$objects, Fixtures::load($fixtureFile, $persister, ['providers' => $providers], $processors));
     }
