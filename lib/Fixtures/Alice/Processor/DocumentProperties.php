@@ -15,6 +15,7 @@ use Pimcore\Model\Property;
 
 class DocumentProperties implements ProcessorInterface
 {
+    private $allowedDocumentTypes = ['page', 'link'];
     /**
      * This might future version proof, because this properties might change
      * but this are set in Ext and there is no way to get them in php
@@ -106,33 +107,45 @@ class DocumentProperties implements ProcessorInterface
      * ]
      * and replaces the original content with the newly generated format
      *
-     * @param object $document instance to process
+     * @param Document\Page|Document\Link $document instance to process
      */
     public function preProcess($document)
     {
-        // TODO MAYBE EXTEND THIS FOR OTHER DOCUMENT TYPES
-        if ($document instanceof Document && ($document->getType() === null || $document->getType() === 'page')) {
-            // Get properties as array from fixtures and erase them
-            $propertiesFromYaml = $document->getProperties();
-            $document->setProperties(null);
-            if (is_array($propertiesFromYaml) && !empty($propertiesFromYaml)) {
-                $propertiesFromYaml = array_merge($this->defaultProperties, $propertiesFromYaml);
-                $newProperties = [];
-                foreach ($propertiesFromYaml as $key => $property) {
-                    $newProperties[] = $this->getFormattedProperty($key, $property);
-                }
-                $document->setProperties($newProperties);
-            }
-
+        if ($this->isKnownDocumentType($document) === false) {
+            return;
         }
+
+        // Get properties as array from fixtures and erase them
+        $propertiesFromYaml = self::$lastProperties = $document->getProperties();
+        $document->setProperties(null);
+        if (is_array($propertiesFromYaml) && !empty($propertiesFromYaml)) {
+            $propertiesFromYaml = array_merge($this->defaultProperties, $propertiesFromYaml);
+            $newProperties = [];
+            foreach ($propertiesFromYaml as $key => $property) {
+                $newProperties[] = $this->getFormattedProperty($key, $property);
+            }
+            $document->setProperties($newProperties);
+        }
+
     }
+
+    /**
+     * TODO MAYBE EXTEND THIS FOR OTHER DOCUMENT TYPES
+     * @param Document\Page|Document\Link $document
+     * @return bool
+     */
+    private function isKnownDocumentType($document)
+    {
+        return ($document instanceof Document && ($document->getType() === null || in_array($document->getType(), $this->allowedDocumentTypes)));
+    }
+
 
     /**
      * Processes an object after it is persisted to DB
      *
-     * @param object $object instance to process
+     * @param Document\Page|Document\Link $document instance to process
      */
-    public function postProcess($object)
+    public function postProcess($document)
     {
     }
 
@@ -158,7 +171,7 @@ class DocumentProperties implements ProcessorInterface
         $property->setInherited($propertyData['inherited']);
         // Some properties do not support inheritable so we set it only when available
         if (array_key_exists('inheritable', $propertyData)) {
-            $property->setInheritable($propertyData['inherited']);
+            $property->setInheritable($propertyData['inheritable']);
         }
         // Pimcore will update this 2 properties after persisting it to the database
         // $property->setCid($documentId);
