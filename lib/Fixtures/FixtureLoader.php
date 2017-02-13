@@ -3,6 +3,7 @@ namespace Fixtures;
 
 use Fixtures\Alice\Persister\PimcorePersister;
 use Fixtures\Alice\Processor\ClassificationStoreProcessor;
+use Fixtures\Alice\Processor\DocumentProperties;
 use Fixtures\Alice\Processor\UserProcessor;
 use Fixtures\Alice\Processor\WorkspaceProcessor;
 use Fixtures\Alice\Providers\Assets;
@@ -59,7 +60,8 @@ class FixtureLoader
         $processors = [
             new ClassificationStoreProcessor(),
             new UserProcessor(),
-            new WorkspaceProcessor()
+            new WorkspaceProcessor(),
+            new DocumentProperties()
         ];
         $persister = new PimcorePersister(); // set parameter to true to update existing objects
         $basename = basename($fixtureFile);
