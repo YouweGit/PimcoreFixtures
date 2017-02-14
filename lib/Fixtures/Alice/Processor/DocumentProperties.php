@@ -116,7 +116,7 @@ class DocumentProperties implements ProcessorInterface
         }
 
         // Get properties as array from fixtures and erase them
-        $propertiesFromYaml = self::$lastProperties = $document->getProperties();
+        $propertiesFromYaml = $document->getProperties();
         $document->setProperties(null);
         if (is_array($propertiesFromYaml) && !empty($propertiesFromYaml)) {
             $propertiesFromYaml = array_merge($this->defaultProperties, $propertiesFromYaml);
