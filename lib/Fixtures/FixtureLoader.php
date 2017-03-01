@@ -34,10 +34,11 @@ class FixtureLoader
         ]);
 
         if (is_array($specificFiles) && count($specificFiles) > 0) {
-            $fixturesFiles = glob(self::FIXTURE_FOLDER . '/{' . implode(',', $specificFiles) . '}.yml', GLOB_BRACE);
+            $fixturesFiles = glob(self::FIXTURE_FOLDER . '/{' . implode(',', $specificFiles) . '}.{yml,php}', GLOB_BRACE);
         } else {
-            $fixturesFiles = glob(self::FIXTURE_FOLDER . '/*.yml');
+            $fixturesFiles = glob(self::FIXTURE_FOLDER . '/*.{yml,php}',GLOB_BRACE);
         }
+
         usort($fixturesFiles, function ($a, $b) {
             return strnatcasecmp($a, $b);
         });
