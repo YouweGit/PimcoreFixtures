@@ -9,6 +9,7 @@ use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
 use Pimcore\Model\User\Permission;
 use Pimcore\Model\User\Workspace;
+use Pimcore\Model\Object\QuantityValue;
 
 class PimcorePersister implements PersisterInterface
 {
@@ -54,6 +55,9 @@ class PimcorePersister implements PersisterInterface
                     break;
                 case $object instanceof Object\Objectbrick:
                     $this->persistObjectBrickSave($object);
+                    break;
+                case $object instanceof QuantityValue\Unit:
+                    $this->persistClassWithSave($object);
                     break;
 //                case $object instanceof Model\AbstractModel:
 //                    var_dump(get_class($object));
