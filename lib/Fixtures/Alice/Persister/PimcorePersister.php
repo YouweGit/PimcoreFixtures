@@ -5,6 +5,7 @@ namespace Fixtures\Alice\Persister;
 use Nelmio\Alice\PersisterInterface;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object;
+use Pimcore\Model\WebsiteSetting;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
 use Pimcore\Model\User\Permission;
@@ -57,6 +58,7 @@ class PimcorePersister implements PersisterInterface
                     $this->persistObjectBrickSave($object);
                     break;
                 case $object instanceof QuantityValue\Unit:
+                case $object instanceof WebsiteSetting:
                     $this->persistClassWithSave($object);
                     break;
 //                case $object instanceof Model\AbstractModel:
