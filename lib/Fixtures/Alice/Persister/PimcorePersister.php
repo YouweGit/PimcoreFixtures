@@ -5,6 +5,7 @@ namespace Fixtures\Alice\Persister;
 use Nelmio\Alice\PersisterInterface;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object;
+use Pimcore\Model\Redirect;
 use Pimcore\Model\WebsiteSetting;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
@@ -48,6 +49,9 @@ class PimcorePersister implements PersisterInterface
                     break;
                 // Add here cases of exception that don't even have a save method but they actually do
                 case $object instanceof Permission\Definition:
+                    $this->persistClassWithSave($object);
+                    break;
+                case $object instanceof Redirect:
                     $this->persistClassWithSave($object);
                     break;
                 case $object instanceof Workspace\Object:
