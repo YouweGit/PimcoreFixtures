@@ -21,7 +21,24 @@ class FixtureLoader
     const IMAGES_FOLDER  = PIMCORE_WEBSITE_VAR . '/plugins/PimcoreFixtures/images';
 
     private static $objects = [];
+    /**
+     * @var bool
+     */
+    private $omitValidation;
+    /**
+     * @var bool
+     */
+    private $checkPathExists;
 
+    /**
+     * FixtureLoader constructor.
+     * @param bool $checkPathExists
+     * @param bool $omitValidation
+     */
+    public function __construct($checkPathExists, $omitValidation) {
+        $this->omitValidation = $omitValidation;
+        $this->checkPathExists = $checkPathExists;
+    }
     /**
      * @param array|null $specificFiles Array of files in fixtures folder
      * @return array
@@ -64,7 +81,7 @@ class FixtureLoader
             new WorkspaceProcessor(),
             new DocumentProperties()
         ];
-        $persister = new PimcorePersister(); // set parameter to true to update existing objects
+        $persister = new PimcorePersister($this->checkPathExists, $this->omitValidation);
         $basename = basename($fixtureFile);
         self::$objects[ $basename ] = array_merge(self::$objects, Fixtures::load($fixtureFile, $persister, ['providers' => $providers], $processors));
     }

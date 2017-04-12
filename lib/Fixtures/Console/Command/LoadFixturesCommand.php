@@ -17,7 +17,9 @@ class LoadFixturesCommand extends AbstractCommand
     {
         $this->setName('fixtures:load')
             ->setDescription('Imports yml fixtures')
-            ->addOption('with-cache', 'c', null, 'Calculates the fingerprint of fixtures and if mathches with load sql file instead of looping throw fixtures')
+            ->addOption('with-cache', 'c', InputArgument::OPTIONAL, 'Calculates the fingerprint of fixtures and if matches with load sql file instead of looping throw fixtures', false)
+            ->addOption('omit-validation', 'ov', InputArgument::OPTIONAL, 'Omits object validation', true)
+            ->addOption('check-path-exists', 'cpe', InputArgument::OPTIONAL, 'If true it will check if the path already exists and if yes then it will update the values', false)
             ->addOption('files', 'f', InputArgument::OPTIONAL, 'Comma separated files located at "' . FixtureLoader::FIXTURE_FOLDER . '"');
     }
 
@@ -34,6 +36,8 @@ class LoadFixturesCommand extends AbstractCommand
         // Currently we have calculated fields without any class attached
         $this->disableLogging();
         $withCache = $input->getOption('with-cache');
+        $omitValidation = $input->getOption('omit-validation');
+        $checkPathExists = $input->getOption('check-path-exists');
         $files = $input->getOption('files') ? explode(',', $input->getOption('files')) : null;
         $fixtureFiles = FixtureLoader::getFixturesFiles($files);
         $fingerPrintFilePath = PIMCORE_TEMPORARY_DIRECTORY . '/pimcore_fixtures_cache_' . $this->getSha1FromFixtures($fixtureFiles). '.sql';
@@ -49,7 +53,7 @@ class LoadFixturesCommand extends AbstractCommand
             $progress->start();
             $progress->setFormat(" %current%/%max% [%bar%] <info>%percent:3s%% %elapsed:6s% %memory:6s%\t%message%</info>");
 
-            $fixtureLoader = new FixtureLoader();
+            $fixtureLoader = new FixtureLoader($checkPathExists, $omitValidation);
             foreach ($fixtureFiles as $fixtureFile) {
                 $progress->setMessage('<comment>Loading</comment>  ' . str_replace(PIMCORE_WEBSITE_VAR, '', $fixtureFile));
                 $progress->advance();

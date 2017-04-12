@@ -3,6 +3,8 @@
 namespace Fixtures\Alice\Persister;
 
 use Nelmio\Alice\PersisterInterface;
+use Pimcore\Model\Asset;
+use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object;
 use Pimcore\Model\Redirect;
@@ -19,14 +21,20 @@ class PimcorePersister implements PersisterInterface
     /**
      * @var bool
      */
-    private $ignorePathAlreadyExists;
+    private $checkPathExists;
+    /**
+     * @var bool
+     */
+    private $omitValidation;
 
     /**
-     * @param bool $ignorePathAlreadyExits
+     * @param bool $checkPathExists
+     * @param bool $omitValidation
      */
-    public function __construct($ignorePathAlreadyExits = false)
+    public function __construct($checkPathExists, $omitValidation)
     {
-        $this->ignorePathAlreadyExists = $ignorePathAlreadyExits;
+        $this->checkPathExists = $checkPathExists;
+        $this->omitValidation = $omitValidation;
     }
 
     /**
@@ -41,7 +49,6 @@ class PimcorePersister implements PersisterInterface
         foreach ($objects as $object) {
             switch (true) {
                 case $object instanceof AbstractElement:
-                case $object instanceof AbstractObject:
                     $this->persistObject($object);
                     break;
                 case $object instanceof AbstractUser:
@@ -77,28 +84,34 @@ class PimcorePersister implements PersisterInterface
     }
 
     /**
-     * @param AbstractObject $object
+     * @param Object\Concrete|Document|Asset $element
      */
-    private function persistObject($object)
+    private function persistObject($element)
     {
-        if ($this->ignorePathAlreadyExists === true) {
-            if ($parent = $object->getParent()) {
+        if ($this->checkPathExists === true) {
+            if ($parent = $element->getParent()) {
 
                 $path = str_replace('//', '/', $parent->getFullPath() . '/');
-                $object->setPath($path);
+                $element->setPath($path);
             }
-            $tmpObject = $object::getByPath($object->getFullPath());
+            $tmpObject = $element::getByPath($element->getFullPath());
 
             if ($tmpObject) {
-                $objClass = get_class($object);
+                $objClass = get_class($element);
                 if ($tmpObject instanceof $objClass) {
-                    $object->setId($tmpObject->getId());
+                    $element->setId($tmpObject->getId());
                 } else {
                     $tmpObject->delete();
                 }
             }
         }
-        $object->save();
+
+        // We expect an element, only Object\Concrete has mandatory fields
+        if(method_exists($element, 'setOmitMandatoryCheck')){
+            $element->setOmitMandatoryCheck($this->omitValidation);
+        }
+
+        $element->save();
     }
 
     /**
