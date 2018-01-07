@@ -1,24 +1,24 @@
 <?php
-namespace Fixtures;
+namespace FixtureBundle\Service;
 
-use Fixtures\Alice\Persister\PimcorePersister;
-use Fixtures\Alice\Processor\ClassificationStoreProcessor;
-use Fixtures\Alice\Processor\DocumentProperties;
-use Fixtures\Alice\Processor\UserProcessor;
-use Fixtures\Alice\Processor\WorkspaceProcessor;
-use Fixtures\Alice\Providers\Assets;
-use Fixtures\Alice\Providers\ClassificationStoreProvider;
-use Fixtures\Alice\Providers\DateTime;
-use Fixtures\Alice\Providers\General;
-use Fixtures\Alice\Providers\ObjectReference;
+use FixtureBundle\Alice\Providers\Assets;
+use FixtureBundle\Alice\Persister\PimcorePersister;
+use FixtureBundle\Alice\Processor\ClassificationStoreProcessor;
+use FixtureBundle\Alice\Processor\DocumentProperties;
+use FixtureBundle\Alice\Processor\UserProcessor;
+use FixtureBundle\Alice\Processor\WorkspaceProcessor;
+use FixtureBundle\Alice\Providers\ClassificationStoreProvider;
+use FixtureBundle\Alice\Providers\DateTime;
+use FixtureBundle\Alice\Providers\General;
+use FixtureBundle\Alice\Providers\ObjectReference;
 use Nelmio\Alice\Fixtures;
 use Pimcore\File;
 
 class FixtureLoader
 {
 
-    const FIXTURE_FOLDER = PIMCORE_WEBSITE_VAR . '/plugins/PimcoreFixtures/fixtures';
-    const IMAGES_FOLDER  = PIMCORE_WEBSITE_VAR . '/plugins/PimcoreFixtures/images';
+    const FIXTURE_FOLDER = PIMCORE_PRIVATE_VAR. '/bundles/FixtureBundle/fixtures';
+    const IMAGES_FOLDER  = PIMCORE_PRIVATE_VAR . '/bundles/FixtureBundle/images';
 
     private static $objects = [];
     /**
@@ -92,6 +92,7 @@ class FixtureLoader
      */
     private static function createFolderDependencies($folders)
     {
+        var_dump($folders);
         foreach ($folders as $folder) {
             if (!is_dir($folder)) {
                 File::mkdir($folder);

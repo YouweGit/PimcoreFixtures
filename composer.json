@@ -1,9 +1,8 @@
 {
   "name": "youwe/pimcore-fixtures",
   "description": "Load yml fixtures in pimcore",
-  "type": "pimcore-plugin",
+  "type": "pimcore-bundle",
   "require": {
-    "pimcore/installer-plugin": "^1.5",
     "nelmio/alice": "2.2.*",
     "fzaninotto/faker": "1.6.*"
   },
@@ -16,5 +15,17 @@
     {
       "name": "Youwe"
     }
-  ]
+  ],
+  "autoload": {
+    "psr-4": {
+      "FixtureBundle\\": "/"
+    }
+  },
+  "extra": {
+    "pimcore": {
+      "bundles": [
+        "FeedBuilderBundle\\FeedBuilderBundle"
+      ]
+    }
+  }
 }

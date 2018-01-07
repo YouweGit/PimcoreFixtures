@@ -1,6 +1,6 @@
 <?php
 
-namespace Fixtures\Alice\Persister;
+namespace FixtureBundle\Alice\Persister;
 
 use Nelmio\Alice\PersisterInterface;
 use Pimcore\Model\Asset;
