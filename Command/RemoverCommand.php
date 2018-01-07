@@ -2,12 +2,20 @@
 
 namespace FixtureBundle\Command;
 
+use Nelmio\Alice\Fixtures;
 use Pimcore\Console\AbstractCommand;
+use Pimcore\Model\Asset;
+use Pimcore\Model\Document;
+use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Element\Service;
+use Pimcore\Model\Object\AbstractObject;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class RemoverCommand extends AbstractCommand
 {
