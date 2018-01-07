@@ -92,7 +92,6 @@ class FixtureLoader
      */
     private static function createFolderDependencies($folders)
     {
-        var_dump($folders);
         foreach ($folders as $folder) {
             if (!is_dir($folder)) {
                 File::mkdir($folder);
