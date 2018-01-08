@@ -1,9 +1,10 @@
 <?php
 
 
-namespace Fixtures;
+namespace FixtureBundle;
 
 
+use FixtureBundle\Service\FixtureLoader;
 use Pimcore\File;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object\AbstractObject;

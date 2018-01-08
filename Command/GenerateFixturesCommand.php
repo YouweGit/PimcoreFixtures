@@ -1,17 +1,23 @@
 <?php
-namespace Fixtures\Console\Command;
 
-use Fixtures\FixtureLoader;
-use Fixtures\Generator;
-use Fixtures\Repository\FolderRepository;
-use Nelmio\Alice\Fixtures;
+namespace FixtureBundle\Command;
+
+use FixtureBundle\Repository\FolderRepository;
+use FixtureBundle\Service\FixtureLoader;
+use FixtureBundle\Service\Generator;
 use Pimcore\Console\AbstractCommand;
+use Pimcore\Model\Element\AbstractElement;
+use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Folder;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Validator\Constraints\Choice;
 
 class GenerateFixturesCommand extends AbstractCommand
 {
@@ -41,7 +47,6 @@ class GenerateFixturesCommand extends AbstractCommand
 
         $rootFolder = $helper->ask($input, $output, $folderRootQuestion);
 
-
         $filenameQuestion = new Question('<info>Choose filename: </info>', 'test');
         $levelsQuestion = new Question('<info>Choose max levels deep (100): </info>', 100);
 
@@ -50,11 +55,11 @@ class GenerateFixturesCommand extends AbstractCommand
 
         $output->writeln(
             ['<info>',
-             'You chose: ',
-             'Root folder: <comment>' . $rootFolder . '</comment>',
-             'Filename: <comment>' . $filename . '</comment>',
-             'Max level deep: <comment>' . $levels . '</comment>',
-             '</info>'
+                'You chose: ',
+                'Root folder: <comment>' . $rootFolder . '</comment>',
+                'Filename: <comment>' . $filename . '</comment>',
+                'Max level deep: <comment>' . $levels . '</comment>',
+                '</info>'
             ]);
 
         $confirmationQuestion = new ConfirmationQuestion(
@@ -64,6 +69,7 @@ class GenerateFixturesCommand extends AbstractCommand
         if (!$helper->ask($input, $output, $confirmationQuestion)) {
             return;
         }
+
         foreach (glob(FixtureLoader::FIXTURE_FOLDER . '_generated' . DIRECTORY_SEPARATOR . '*.yml') as $file){
             unlink($file);
         }

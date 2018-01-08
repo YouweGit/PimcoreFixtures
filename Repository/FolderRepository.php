@@ -6,7 +6,7 @@
  * Time: 15:50
  */
 
-namespace Fixtures\Repository;
+namespace FixtureBundle\Repository;
 
 
 use Pimcore\Model\Object;

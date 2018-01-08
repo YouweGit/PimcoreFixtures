@@ -6,7 +6,7 @@
  * Time: 7:09
  */
 
-namespace Fixtures\Alice\Processor;
+namespace FixtureBundle\Alice\Processor;
 
 
 use Nelmio\Alice\ProcessorInterface;

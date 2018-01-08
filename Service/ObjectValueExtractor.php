@@ -1,6 +1,6 @@
 <?php
 
-namespace Fixtures;
+namespace FixtureBundle\Service;
 
 use Pimcore\Model\Object;
 use Pimcore\Model\Object\AbstractObject;

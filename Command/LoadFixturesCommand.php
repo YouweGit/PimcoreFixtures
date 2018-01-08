@@ -1,47 +1,39 @@
 <?php
-namespace Fixtures\Console\Command;
 
-use Fixtures\FixtureLoader;
-use Nelmio\Alice\Fixtures;
-use Pimcore\Config;
+namespace FixtureBundle\Command;
+
+use FixtureBundle\Service\FixtureLoader;
 use Pimcore\Console\AbstractCommand;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class LoadFixturesCommand extends AbstractCommand
 {
-
     protected function configure()
     {
-        $this->setName('fixtures:load')
+        $this
+            ->setName('fixtures:load')
             ->setDescription('Imports yml fixtures')
             ->addOption('with-cache', 'c', InputArgument::OPTIONAL, 'Calculates the fingerprint of fixtures and if matches with load sql file instead of looping throw fixtures', false)
             ->addOption('omit-validation', 'ov', InputArgument::OPTIONAL, 'Omits object validation', true)
             ->addOption('check-path-exists', 'cpe', InputArgument::OPTIONAL, 'If true it will check if the path already exists and if yes then it will update the values', false)
             ->addOption('files', 'f', InputArgument::OPTIONAL, 'Comma separated files located at "' . FixtureLoader::FIXTURE_FOLDER . '"');
+        ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int|void
-     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        // Currently we have calculated fields without any class attached
-        $this->disableLogging();
         $withCache = $input->getOption('with-cache');
         $omitValidation = $input->getOption('omit-validation');
         $checkPathExists = $input->getOption('check-path-exists');
         $files = $input->getOption('files') ? explode(',', $input->getOption('files')) : null;
         $fixtureFiles = FixtureLoader::getFixturesFiles($files);
         $fingerPrintFilePath = PIMCORE_TEMPORARY_DIRECTORY . '/pimcore_fixtures_cache_' . $this->getSha1FromFixtures($fixtureFiles). '.sql';
-
 
         if ($withCache === false || file_exists($fingerPrintFilePath) === false) {
             $steps = $withCache ? count($fixtureFiles) + 1 : count($fixtureFiles);
@@ -77,8 +69,8 @@ class LoadFixturesCommand extends AbstractCommand
             }
         }
 
-        $output->writeln(' <info>Done!</info>');
     }
+
 
     private function getSha1FromFixtures($fixtureFiles)
     {

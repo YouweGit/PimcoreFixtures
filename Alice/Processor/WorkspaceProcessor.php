@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Fixtures\Alice\Processor;
+namespace FixtureBundle\Alice\Processor;
 
 
 use Nelmio\Alice\ProcessorInterface;

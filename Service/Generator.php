@@ -1,8 +1,12 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: jorisros
+ * Date: 07/01/2018
+ * Time: 05:56
+ */
 
-
-namespace Fixtures;
-
+namespace FixtureBundle\Service;
 
 use Pimcore\File;
 use Pimcore\Model\Element\AbstractElement;
@@ -10,6 +14,7 @@ use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Folder;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
+
 
 class Generator
 {
@@ -116,6 +121,7 @@ class Generator
     {
 
         $yaml = Yaml::dump($data, 3);
+
         $fixturesFolder = FixtureLoader::FIXTURE_FOLDER . '_generated' . DIRECTORY_SEPARATOR;
         if (!is_dir($fixturesFolder)) {
             File::mkdir($fixturesFolder);
@@ -130,6 +136,5 @@ class Generator
         $fullPath = $fixturesFolder . $filename . '.yml';
         file_put_contents($fullPath, $yaml);
     }
-
 
 }

@@ -6,7 +6,7 @@
  * Time: 17:25
  */
 
-namespace Fixtures\Alice\Providers;
+namespace FixtureBundle\Alice\Providers;
 
 
 class DateTime {

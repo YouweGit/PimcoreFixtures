@@ -1,5 +1,6 @@
 <?php
-namespace Fixtures\Console\Command;
+
+namespace FixtureBundle\Command;
 
 use Nelmio\Alice\Fixtures;
 use Pimcore\Console\AbstractCommand;
@@ -8,7 +9,9 @@ use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 use Pimcore\Model\Object\AbstractObject;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -108,11 +111,11 @@ class RemoverCommand extends AbstractCommand
     {
         $output->writeln(
             ['<info>',
-             'Are you sure you want to continue: ',
-             'Type: <comment>' . $type . '</comment>',
-             'Path: <comment>' . $path . '</comment>',
-             'Only children: <comment>' . $onlyChildren . '</comment>',
-             '</info>'
+                'Are you sure you want to continue: ',
+                'Type: <comment>' . $type . '</comment>',
+                'Path: <comment>' . $path . '</comment>',
+                'Only children: <comment>' . $onlyChildren . '</comment>',
+                '</info>'
             ]);
 
         $confirmationQuestion = new ConfirmationQuestion(

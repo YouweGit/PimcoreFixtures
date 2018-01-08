@@ -10,18 +10,28 @@ composer require --dev youwe/pimcore-fixtures
 *This plugin is only for DEV, do NOT install on a production server*
 
 ### How to load fixtures
-Make sure "PimcoreFixtures" is enabled in `/website/var/config/extensions.php`
-Place your fixtures in `/website/var/plugins/PimcoreFixtures/fixtures` named "001_object_name.yml", "002_object_name.yml" etc.
+You must enable the bundle as followed `php bin/console pimcore:bundle:enable FixtureBundle`. To check if the bundle is installed correctly `php bin/console  pimcore:bundle:list`.
+Place your fixtures in `/var/bundles/FixtureBundle/fixtures` named "001_object_name.yml", "002_object_name.yml" etc.
 
+Example fixture for creating a folder
+```yaml
+# 001_folders.yml
+# Object folders
+Pimcore\Model\Object\Folder:
+    products_folder:
+        key: products
+        path: /
+        parentId: 1
+```
 Load them with:
 #### Console
 ```sh
-php pimcore/cli/console.php fixture:load --with-cache
+php bin/console fixture:load --with-cache
 ```
 Load individual files with --files comma separated files without yml extension:
 #### Console
 ```sh
-php pimcore/cli/console.php fixture:load --files filename1,filename2
+php bin/console fixture:load --files filename1,filename2
 ```
 
 #### Backend
@@ -39,13 +49,13 @@ Go to Extensions \ PimcoreFixtures \ plugin settings
 
 #### Console
 ```sh
-php pimcore/cli/console.php fixtures:generate
+php bin/console fixtures:generate
 ```
 
 ### Delete object/assets/documents
 
 ```sh****
-php pimcore/cli/console.php fixtures:delete-path  -t object -p /products
+php bin/console fixtures:delete-path  -t object -p /products
 ```
 
 
