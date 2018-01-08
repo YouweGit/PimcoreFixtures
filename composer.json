@@ -3,6 +3,7 @@
   "description": "Load yml fixtures in pimcore",
   "type": "pimcore-bundle",
   "require": {
+    "pimcore/core-version": "~5.1.0",
     "nelmio/alice": "2.2.*",
     "fzaninotto/faker": "1.6.*"
   },
@@ -24,7 +25,7 @@
   "extra": {
     "pimcore": {
       "bundles": [
-        "FeedBuilderBundle\\FeedBuilderBundle"
+        "FixtureBundle\\FixtureBundle"
       ]
     }
   }
