@@ -10,8 +10,11 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Manea Eugen",
-      "email": "e.manea@youwe.nl"
+      "name": "Manea Eugen"
+    },    
+    {
+      "name": "Joris Ros",
+      "email": "j.ros@youwe.nl"
     },
     {
       "name": "Youwe"
