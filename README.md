@@ -5,7 +5,7 @@ Based on [Alice](https://github.com/nelmio/alice)
 ### How to install
 
 ```sh
-composer require youwe/pimcore-fixtures
+composer require --dev youwe/pimcore-fixtures
 ```
 *This plugin is only for DEV, do NOT install on a production server*
 
