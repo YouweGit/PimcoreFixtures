@@ -2,8 +2,8 @@
 
 namespace FixtureBundle\Service;
 
-use Pimcore\Model\Object;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\AbstractObject;
 use ReflectionClass;
 
 class ObjectValueExtractor
