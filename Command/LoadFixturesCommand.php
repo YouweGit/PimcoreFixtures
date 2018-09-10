@@ -47,7 +47,7 @@ class LoadFixturesCommand extends AbstractCommand
 
             $fixtureLoader = new FixtureLoader($checkPathExists, $omitValidation);
             foreach ($fixtureFiles as $fixtureFile) {
-                $progress->setMessage('<comment>Loading</comment>  ' . str_replace(PIMCORE_WEBSITE_VAR, '', $fixtureFile));
+                $progress->setMessage('<comment>Loading</comment>  ' . str_replace(defined('PIMCORE_PRIVATE_VAR') ? PIMCORE_PRIVATE_VAR : PIMCORE_WEBSITE_VAR, '', $fixtureFile));
                 $progress->advance();
                 $fixtureLoader->load($fixtureFile);
             }
