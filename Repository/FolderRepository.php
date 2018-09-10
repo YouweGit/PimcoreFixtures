@@ -9,8 +9,8 @@
 namespace FixtureBundle\Repository;
 
 
-use Pimcore\Model\Object;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\AbstractObject;
 
 class FolderRepository
 {
@@ -21,7 +21,7 @@ class FolderRepository
      */
     public function getFoldersByQuery($query = null)
     {
-        $folders = new Object\Listing();
+        $folders = new DataObject\Listing();
         $folders->setObjectTypes([AbstractObject::OBJECT_TYPE_FOLDER]);
 
         if ($query) {
