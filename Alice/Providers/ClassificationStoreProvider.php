@@ -3,7 +3,7 @@
 
 namespace FixtureBundle\Alice\Providers;
 
-use Pimcore\Model\Object\Product;
+use Pimcore\Model\DataObject\Product;
 
 class ClassificationStoreProvider
 {
