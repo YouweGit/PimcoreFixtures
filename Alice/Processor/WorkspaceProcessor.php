@@ -5,8 +5,8 @@ namespace FixtureBundle\Alice\Processor;
 
 
 use Nelmio\Alice\ProcessorInterface;
-use Pimcore\Model\Object\AbstractObject;
-use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\User;
 use Pimcore\Tool;
 use Pimcore\Model\User\Workspace;
