@@ -6,14 +6,14 @@ use Nelmio\Alice\PersisterInterface;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
-use Pimcore\Model\Object;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\Redirect;
 use Pimcore\Model\WebsiteSetting;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\User\AbstractUser;
 use Pimcore\Model\User\Permission;
 use Pimcore\Model\User\Workspace;
-use Pimcore\Model\Object\QuantityValue;
+use Pimcore\Model\DataObject\QuantityValue;
 
 class PimcorePersister implements PersisterInterface
 {
@@ -61,11 +61,11 @@ class PimcorePersister implements PersisterInterface
                 case $object instanceof Redirect:
                     $this->persistClassWithSave($object);
                     break;
-                case $object instanceof Workspace\Object:
+                case $object instanceof Workspace\DataObject:
                 case $object instanceof Workspace\Asset:
                     $this->persistClassWithSave($object);
                     break;
-                case $object instanceof Object\Objectbrick:
+                case $object instanceof DataObject\Objectbrick:
                     $this->persistObjectBrickSave($object);
                     break;
                 case $object instanceof QuantityValue\Unit:
@@ -84,7 +84,7 @@ class PimcorePersister implements PersisterInterface
     }
 
     /**
-     * @param Object\Concrete|Document|Asset $element
+     * @param DataObject\Concrete|Document|Asset $element
      */
     private function persistObject($element)
     {
@@ -146,7 +146,7 @@ class PimcorePersister implements PersisterInterface
     private function persistObjectBrickSave($objectBrick)
     {
         $setter = 'set' . $objectBrick->getFieldname();
-        /** @var Object\Concrete $object */
+        /** @var DataObject\Concrete $object */
         $object = $objectBrick->getObject();
         if (!method_exists($object, $setter)) {
             throw new \UnexpectedValueException(sprintf('Object with class %s has no setter %s', get_class($object), $setter));
