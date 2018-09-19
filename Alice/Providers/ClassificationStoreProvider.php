@@ -3,7 +3,7 @@
 
 namespace FixtureBundle\Alice\Providers;
 
-use Pimcore\Model\Object\Product;
+use Pimcore\Model\DataObject\Product;
 
 class ClassificationStoreProvider
 {
@@ -15,6 +15,8 @@ class ClassificationStoreProvider
     public function classificationStore($data)
     {
         $decodedData = json_decode($data, true);
+        
+        //@TODO Make this generic
         $classificationFieldDef = Product::create()->getClass()->getFieldDefinition('accessories');
 
         return $classificationFieldDef->getDataFromEditmode($decodedData, $classificationFieldDef);

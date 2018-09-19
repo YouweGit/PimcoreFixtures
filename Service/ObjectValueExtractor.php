@@ -8,7 +8,7 @@ use ReflectionClass;
 
 class ObjectValueExtractor
 {
-    /** @var Object\Concrete */
+    /** @var DataObject\Concrete */
     private $object;
 
     private static $ignoredFields = [
@@ -60,17 +60,17 @@ class ObjectValueExtractor
 
                 // Known fields that we don`t need their values
                 if (!(
-                    $def instanceof Object\ClassDefinition\Data\Nonownerobjects ||
-                    $def instanceof Object\ClassDefinition\Data\CalculatedValue ||
-                    $def instanceof Object\ClassDefinition\Data\Classificationstore ||
-                    $def instanceof Object\ClassDefinition\Data\Fieldcollections ||
-                    $def instanceof Object\ClassDefinition\Data\ObjectsMetadata ||
-                    $def instanceof Object\ClassDefinition\Data\MultihrefMetadata ||
+                    $def instanceof DataObject\ClassDefinition\Data\Nonownerobjects ||
+                    $def instanceof DataObject\ClassDefinition\Data\CalculatedValue ||
+                    $def instanceof DataObject\ClassDefinition\Data\Classificationstore ||
+                    $def instanceof DataObject\ClassDefinition\Data\Fieldcollections ||
+                    $def instanceof DataObject\ClassDefinition\Data\ObjectsMetadata ||
+                    $def instanceof DataObject\ClassDefinition\Data\MultihrefMetadata ||
                     // Todo this is important, add support
-                    $def instanceof Object\ClassDefinition\Data\Objectbricks
+                    $def instanceof DataObject\ClassDefinition\Data\Objectbricks
                 )
                 ) {
-                    if ($def instanceof Object\ClassDefinition\Data\Localizedfields) {
+                    if ($def instanceof DataObject\ClassDefinition\Data\Localizedfields) {
                         foreach ($def->getFieldDefinitions() as $localizedKey => $localizedFd) {
                             $values[ $localizedKey ] = $this->getDataForField($this->object, $localizedKey, $localizedFd);
 
@@ -90,19 +90,19 @@ class ObjectValueExtractor
     }
 
     /**
-     * @param Object\Concrete $object
+     * @param DataObject\Concrete $object
      * @param string $key
-     * @param Object\ClassDefinition\Data $fieldDefinition
+     * @param DataObject\ClassDefinition\Data $fieldDefinition
      * @return array
      */
     private function getDataForField($object, $key, $fieldDefinition)
     {
-        if ($fieldDefinition instanceof Object\ClassDefinition\Data\Relations\AbstractRelations) {
+        if ($fieldDefinition instanceof DataObject\ClassDefinition\Data\Relations\AbstractRelations) {
             $relations = $object->getRelationData($key, !$fieldDefinition->isRemoteOwner(), null);
 
             $value = [];
             if (count($relations)) {
-                if ($fieldDefinition instanceof Object\ClassDefinition\Data\Href) {
+                if ($fieldDefinition instanceof DataObject\ClassDefinition\Data\Href) {
                     $obj = AbstractObject::getById($relations[0]['id']);
                     $objKey = $this->getUniqueKey($obj);
                     $value = '@' . $objKey;
@@ -132,9 +132,9 @@ class ObjectValueExtractor
      */
     public function hasObjectBrick()
     {
-        if ($this->object instanceof Object\Concrete) {
+        if ($this->object instanceof DataObject\Concrete) {
             foreach ($this->object->getClass()->getFieldDefinitions() as $key => $def) {
-                if ($def instanceof Object\ClassDefinition\Data\Objectbricks) {
+                if ($def instanceof DataObject\ClassDefinition\Data\Objectbricks) {
                     return true;
                 }
             }
@@ -149,18 +149,18 @@ class ObjectValueExtractor
      */
     public function addObjectBricksForObject($object, &$classArray)
     {
-        if ($object instanceof Object\Concrete) {
+        if ($object instanceof DataObject\Concrete) {
             foreach ($object->getClass()->getFieldDefinitions() as $key => $def) {
-                if ($def instanceof Object\ClassDefinition\Data\Objectbricks) {
+                if ($def instanceof DataObject\ClassDefinition\Data\Objectbricks) {
                     $getter = 'get' . ucfirst($key);
-                    /** @var \Pimcore\Model\Object\Objectbrick $objectBrick */
+                    /** @var \Pimcore\Model\DataObject\Objectbrick $objectBrick */
                     $objectBrick = $object->$getter();
 
                     $objectBrickGetter = current($objectBrick->getBrickGetters());
-                    /** @var Object\Objectbrick\Data\AbstractData $objectBrickHolder */
+                    /** @var DataObject\Objectbrick\Data\AbstractData $objectBrickHolder */
                     $objectBrickHolder = $objectBrick->$objectBrickGetter();
                     if ($objectBrickHolder) {
-                        /** @var Object\Objectbrick\Definition $objectBrickHolderDefinition */
+                        /** @var DataObject\Objectbrick\Definition $objectBrickHolderDefinition */
                         $objectBrickHolderDefinition = $objectBrickHolder->getDefinition();
                         $classArray[ get_class($objectBrickHolder) ][ self::getUniqueKey($object) . '_' . $key . '_holder' ]['__construct'] = ['@' . self::getUniqueKey($object)];
                         foreach ($objectBrickHolderDefinition->getFieldDefinitions() as $objectBrickKey => $objectBrickDefinition) {
@@ -214,7 +214,7 @@ class ObjectValueExtractor
         }
 
         $vars['key'] = $this->object->getKey();
-        if ($this->object instanceof Object\Concrete) {
+        if ($this->object instanceof DataObject\Concrete) {
             $vars['published'] = $this->object->getPublished();
         }
     }

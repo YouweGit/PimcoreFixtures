@@ -7,8 +7,8 @@ namespace FixtureBundle;
 use FixtureBundle\Service\FixtureLoader;
 use Pimcore\File;
 use Pimcore\Model\Element\AbstractElement;
-use Pimcore\Model\Object\AbstractObject;
-use Pimcore\Model\Object\Folder;
+use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\Folder;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
 

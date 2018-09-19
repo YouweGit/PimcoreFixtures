@@ -5,10 +5,10 @@ namespace FixtureBundle\Alice\Processor;
 
 
 use Nelmio\Alice\ProcessorInterface;
-use Pimcore\Model\Object\AbstractObject;
-use Pimcore\Model\Object\ClassDefinition\Data\Classificationstore;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\Folder;
+use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Classificationstore;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Folder;
 
 class ClassificationStoreProcessor implements ProcessorInterface
 {
@@ -24,7 +24,7 @@ class ClassificationStoreProcessor implements ProcessorInterface
         if (($object instanceof AbstractObject || $object instanceof Concrete) && !$object instanceof Folder && $storeName = $this->objectHasClassificationStore($object)) {
             $getter = 'get' . ucfirst($storeName);
             $setter = 'set' . ucfirst($storeName);
-            /** @var \Pimcore\Model\Object\Classificationstore $classificationStore */
+            /** @var \Pimcore\Model\DataObject\Classificationstore $classificationStore */
             $classificationStore = $object->$getter();
             if (count($classificationStore->getItems()) > 1) {
                 $classificationStore->setObject($object);

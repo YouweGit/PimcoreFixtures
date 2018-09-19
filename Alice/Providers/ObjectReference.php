@@ -5,7 +5,7 @@ namespace FixtureBundle\Alice\Providers;
 
 use Exception;
 use Faker\Provider\Base;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 
 class ObjectReference
 {
