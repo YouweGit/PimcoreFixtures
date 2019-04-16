@@ -54,7 +54,7 @@ class ObjectValueExtractor
 
     public function getDataForObject()
     {
-        if ($this->object instanceof Object\Concrete) {
+        if ($this->object instanceof DataObject\Concrete) {
             $values = [];
             foreach ($this->object->getClass()->getFieldDefinitions() as $key => $def) {
 
@@ -102,7 +102,7 @@ class ObjectValueExtractor
 
             $value = [];
             if (count($relations)) {
-                if ($fieldDefinition instanceof DataObject\ClassDefinition\Data\Href) {
+                if ($fieldDefinition instanceof DataObject\ClassDefinition\Data\ManyToOneRelation) {
                     $obj = AbstractObject::getById($relations[0]['id']);
                     $objKey = $this->getUniqueKey($obj);
                     $value = '@' . $objKey;
