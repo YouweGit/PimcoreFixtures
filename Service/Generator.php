@@ -77,7 +77,7 @@ class Generator
     private function getChildrenRecursive($root, &$fixtures = [])
     {
         /** @var AbstractObject $child */
-        foreach ($root->getChilds(self::ALL_OBJ_TYPES, true) as $child) {
+        foreach ($root->getChildren(self::ALL_OBJ_TYPES, true) as $child) {
             $currentLevel = $this->getCurrentLevel($child);
 
             $valueExtractor = new ObjectValueExtractor($child);
@@ -90,7 +90,7 @@ class Generator
                 $valueExtractor->addObjectBricksForObject($child, $fixtures[ $currentLevel ][ (new ReflectionClass($child))->getShortName() ]);
             }
 
-            if ($child->getChilds(self::ALL_OBJ_TYPES, true) && ($currentLevel < $this->maxLevels)) {
+            if ($child->getChildren(self::ALL_OBJ_TYPES, true) && ($currentLevel < $this->maxLevels)) {
                 $this->getChildrenRecursive($child, $fixtures);
             }
         }
