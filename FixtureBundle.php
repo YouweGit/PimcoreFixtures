@@ -8,14 +8,15 @@
 
 namespace FixtureBundle;
 
-
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
+use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
 class FixtureBundle extends AbstractPimcoreBundle
 {
-    public function getJsPaths()
+	use PackageVersionTrait;
+
+    protected function getComposerPackageName()
     {
-        return [
-        ];
-    }
+        return 'youwe/pimcore-fixtures';
+    } 
 }
